@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 import time
@@ -10,6 +11,14 @@ from .models import RecommendationResponse, ErrorResponse
 from .intent_classifier import classify_archetype
 
 app = FastAPI(title="FILMBOX API")
+
+# CORS — Allow frontend to call the API
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 ARCHETYPES = [
     "Blockbuster",
