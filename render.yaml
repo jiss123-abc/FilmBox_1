@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: filmbox-api
+    env: docker
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false # Set this in the Render dashboard manually
+      - key: DATABASE_URL
+        value: sqlite:///./backend/filmbox.db

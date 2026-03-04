@@ -1,0 +1,5 @@
+Please place simple PNG exports from drawing or database schema tools here:
+
+- er_diagram.png (Database relationships)
+- system_flow.png (High-level request pipeline)
+- scoring_flow.png (Base vs Emotional scoring math visualization)
