@@ -8,7 +8,10 @@ CREATE TABLE IF NOT EXISTS movies (
     runtime INTEGER,
     popularity REAL,
     vote_average REAL,
-    vote_count INTEGER
+    vote_count INTEGER,
+    poster_path TEXT,
+    backdrop_path TEXT,
+    tmdb_id INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS genres (
@@ -46,7 +49,19 @@ CREATE TABLE IF NOT EXISTS emotional_archetype_tags (
     FOREIGN KEY (movie_id) REFERENCES movies(id)
 );
 
+-- Personalization & User Memory
+CREATE TABLE IF NOT EXISTS user_interactions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    session_id TEXT NOT NULL,
+    movie_id INTEGER NOT NULL,
+    action TEXT NOT NULL CHECK(action IN ('liked','saved','clicked')),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (movie_id) REFERENCES movies(id)
+);
+
 -- Indexes for performance
 CREATE INDEX IF NOT EXISTS idx_popularity ON movies(popularity);
 CREATE INDEX IF NOT EXISTS idx_vote ON movies(vote_average);
 CREATE INDEX IF NOT EXISTS idx_archetype ON emotional_archetype_tags(archetype);
+CREATE INDEX IF NOT EXISTS idx_session ON user_interactions(session_id);
+CREATE INDEX IF NOT EXISTS idx_interaction_date ON user_interactions(created_at);

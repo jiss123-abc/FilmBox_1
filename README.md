@@ -1,23 +1,62 @@
-🎬 FILMBOX — COMPLETE ARCHITECTURE & PIPELINE
+🎬 FILMBOX — 8-LAYER INTELLIGENCE PIPELINE
 🧱 SYSTEM OVERVIEW
 
-FilmBox is a Deterministic Emotional Movie Recommender.
+FilmBox has evolved from a deterministic recommender into a mature, **8-layer Emotion-Aware Recommendation System**. It mimics the capabilities of tier-1 streaming platforms by incorporating temporal taste drift, session memory, and transparent counterfactual reasoning.
 
-It consists of 4 layers:
+### 🧠 System Architecture
 
-DATA LAYER
-   ↓
-SCORING LAYER
-   ↓
-API LAYER
-   ↓
-PRESENTATION LAYER
+```mermaid
+flowchart TD
+    classDef io fill:#000000,stroke:#a78bfa,stroke-width:2px,color:#ffffff,font-family:Inter;
+    classDef core fill:#111111,stroke:#7c3aed,stroke-width:2px,color:#e5e7eb,font-family:Inter;
+    classDef text_muted fill:none,stroke:none,color:#9ca3af,font-size:12px,font-family:mono;
 
-Each layer is isolated.
+    Q([User Mood / Query]):::io 
+    
+    Q --> M
+    
+    M["Emotion Archetype Mapper<br/><span style='color:#a78bfa;font-size:12px'>(6 emotional states via LLM)</span>"]:::core
+    
+    M --> V
+    
+    V["Vector Representation Engine<br/><span style='color:#a78bfa;font-size:12px'>(6D+ movie fingerprint space)</span>"]:::core
+    
+    V --> P
+    
+    P["Adaptive Personalization & Temporal Drift<br/><span style='color:#a78bfa;font-size:12px'>(Session memory + e^-λt decay)</span>"]:::core
+    
+    P --> A
+    
+    A["Archetype Lift Scoring<br/><span style='color:#a78bfa;font-size:12px'>(ALPHA weighting)</span>"]:::core
+    
+    A --> QB
+    
+    QB["Quality Benchmark Layer<br/><span style='color:#a78bfa;font-size:12px'>(Global Leaders normalization)</span>"]:::core
+    
+    QB --> RE
+    
+    RE["Ranking Engine<br/><span style='color:#a78bfa;font-size:12px'>(Cosine similarity + Diversity interleave)</span>"]:::core
+    
+    RE --> CF
+    
+    CF["Counterfactual Reasoning Engine<br/><span style='color:#a78bfa;font-size:12px'>(Why A > B)</span>"]:::core
+    
+    CF --> Output
+    
+    Output(["Final Ranked Recommendations<br/><span style='color:#a78bfa;font-size:12px'>+ Transparent Explanation Bullets</span>"]):::io
+```
 
-No cross-contamination of logic.
+### 🧬 The 8 Intelligence Layers
+1. **Intent Modeling**: LLM processes natural language into a 6D emotional query vector.
+2. **Semantic Representation**: Movies are mapped to 6D emotional embeddings.
+3. **Vector Similarity**: Core ranking utilizing cosine similarity.
+4. **Personalization**: User interaction centroid tracking implicit preferences (likes, saves, clicks).
+5. **Temporal Adaptation**: Exponential decay (`λ=0.035`) organically drifts tastes over time.
+6. **Adaptive Confidence**: Dynamic BETA scaling shifts weighting smoothly from cold-start to tailored profiles.
+7. **Transparent Reasoning**: Foundational contribution explanations for user trust.
+8. **Counterfactual Reasoning**: Advanced "winner vs runner-up" comparative intelligence logic.
 
-🟢 PHASE 1 — DATA FOUNDATION
+---
 🎯 Objective
 
 Create a stable relational metadata database.

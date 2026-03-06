@@ -1,0 +1,2140 @@
+[
+    {
+        "title": "Inception",
+        "year": 2010,
+        "archetypes": {
+            "mind_bending": 0.9,
+            "dark": 0.6,
+            "adrenaline": 0.5,
+            "emotional": 0.2,
+            "inspirational": 0.1
+        }
+    },
+    {
+        "title": "The Matrix",
+        "year": 1999,
+        "archetypes": {
+            "mind_bending": 0.9,
+            "adrenaline": 0.8,
+            "dark": 0.4
+        }
+    },
+    {
+        "title": "Shutter Island",
+        "year": 2010,
+        "archetypes": {
+            "mind_bending": 0.9,
+            "dark": 0.8,
+            "emotional": 0.4
+        }
+    },
+    {
+        "title": "Memento",
+        "year": 2000,
+        "archetypes": {
+            "mind_bending": 0.95,
+            "dark": 0.7
+        }
+    },
+    {
+        "title": "The Prestige",
+        "year": 2006,
+        "archetypes": {
+            "mind_bending": 0.85,
+            "dark": 0.6,
+            "emotional": 0.3
+        }
+    },
+    {
+        "title": "Interstellar",
+        "year": 2014,
+        "archetypes": {
+            "mind_bending": 0.8,
+            "emotional": 0.7,
+            "inspirational": 0.5,
+            "adrenaline": 0.4
+        }
+    },
+    {
+        "title": "Donnie Darko",
+        "year": 2001,
+        "archetypes": {
+            "mind_bending": 0.9,
+            "dark": 0.7,
+            "emotional": 0.4
+        }
+    },
+    {
+        "title": "Eternal Sunshine of the Spotless Mind",
+        "year": 2004,
+        "archetypes": {
+            "mind_bending": 0.8,
+            "emotional": 0.9,
+            "light": 0.3
+        }
+    },
+    {
+        "title": "Fight Club",
+        "year": 1999,
+        "archetypes": {
+            "mind_bending": 0.85,
+            "dark": 0.8,
+            "adrenaline": 0.4
+        }
+    },
+    {
+        "title": "The Sixth Sense",
+        "year": 1999,
+        "archetypes": {
+            "mind_bending": 0.9,
+            "dark": 0.5,
+            "emotional": 0.5
+        }
+    },
+    {
+        "title": "Mulholland Drive",
+        "year": 2001,
+        "archetypes": {
+            "mind_bending": 0.95,
+            "dark": 0.8
+        }
+    },
+    {
+        "title": "Predestination",
+        "year": 2014,
+        "archetypes": {
+            "mind_bending": 0.9,
+            "dark": 0.5
+        }
+    },
+    {
+        "title": "Arrival",
+        "year": 2016,
+        "archetypes": {
+            "mind_bending": 0.85,
+            "emotional": 0.7,
+            "inspirational": 0.3
+        }
+    },
+    {
+        "title": "Black Swan",
+        "year": 2010,
+        "archetypes": {
+            "mind_bending": 0.8,
+            "dark": 0.85,
+            "emotional": 0.5
+        }
+    },
+    {
+        "title": "Ex Machina",
+        "year": 2014,
+        "archetypes": {
+            "mind_bending": 0.85,
+            "dark": 0.6
+        }
+    },
+    {
+        "title": "The Truman Show",
+        "year": 1998,
+        "archetypes": {
+            "mind_bending": 0.8,
+            "emotional": 0.6,
+            "light": 0.4,
+            "inspirational": 0.3
+        }
+    },
+    {
+        "title": "Moon",
+        "year": 2009,
+        "archetypes": {
+            "mind_bending": 0.8,
+            "emotional": 0.6,
+            "dark": 0.3
+        }
+    },
+    {
+        "title": "Coherence",
+        "year": 2013,
+        "archetypes": {
+            "mind_bending": 0.9,
+            "dark": 0.5
+        }
+    },
+    {
+        "title": "Primer",
+        "year": 2004,
+        "archetypes": {
+            "mind_bending": 0.95,
+            "dark": 0.3
+        }
+    },
+    {
+        "title": "Source Code",
+        "year": 2011,
+        "archetypes": {
+            "mind_bending": 0.8,
+            "adrenaline": 0.6
+        }
+    },
+    {
+        "title": "Vanilla Sky",
+        "year": 2001,
+        "archetypes": {
+            "mind_bending": 0.85,
+            "emotional": 0.5,
+            "dark": 0.4
+        }
+    },
+    {
+        "title": "12 Monkeys",
+        "year": 1995,
+        "archetypes": {
+            "mind_bending": 0.85,
+            "dark": 0.6
+        }
+    },
+    {
+        "title": "Annihilation",
+        "year": 2018,
+        "archetypes": {
+            "mind_bending": 0.8,
+            "dark": 0.7,
+            "adrenaline": 0.3
+        }
+    },
+    {
+        "title": "Dark City",
+        "year": 1998,
+        "archetypes": {
+            "mind_bending": 0.85,
+            "dark": 0.7
+        }
+    },
+    {
+        "title": "Enemy",
+        "year": 2013,
+        "archetypes": {
+            "mind_bending": 0.9,
+            "dark": 0.7
+        }
+    },
+    {
+        "title": "Mr. Nobody",
+        "year": 2009,
+        "archetypes": {
+            "mind_bending": 0.85,
+            "emotional": 0.6,
+            "light": 0.2
+        }
+    },
+    {
+        "title": "The Butterfly Effect",
+        "year": 2004,
+        "archetypes": {
+            "mind_bending": 0.8,
+            "dark": 0.6,
+            "emotional": 0.4
+        }
+    },
+    {
+        "title": "Identity",
+        "year": 2003,
+        "archetypes": {
+            "mind_bending": 0.85,
+            "dark": 0.7,
+            "adrenaline": 0.4
+        }
+    },
+    {
+        "title": "10 Cloverfield Lane",
+        "year": 2016,
+        "archetypes": {
+            "mind_bending": 0.7,
+            "dark": 0.7,
+            "adrenaline": 0.6
+        }
+    },
+    {
+        "title": "Triangle",
+        "year": 2009,
+        "archetypes": {
+            "mind_bending": 0.9,
+            "dark": 0.7
+        }
+    },
+    {
+        "title": "Tenet",
+        "year": 2020,
+        "archetypes": {
+            "mind_bending": 0.9,
+            "adrenaline": 0.7,
+            "dark": 0.3
+        }
+    },
+    {
+        "title": "Looper",
+        "year": 2012,
+        "archetypes": {
+            "mind_bending": 0.8,
+            "adrenaline": 0.6,
+            "dark": 0.4
+        }
+    },
+    {
+        "title": "Paprika",
+        "year": 2006,
+        "archetypes": {
+            "mind_bending": 0.9,
+            "light": 0.4,
+            "emotional": 0.3
+        }
+    },
+    {
+        "title": "Oldboy",
+        "year": 2003,
+        "archetypes": {
+            "mind_bending": 0.7,
+            "dark": 0.9,
+            "adrenaline": 0.5
+        }
+    },
+    {
+        "title": "The Machinist",
+        "year": 2004,
+        "archetypes": {
+            "mind_bending": 0.8,
+            "dark": 0.85
+        }
+    },
+    {
+        "title": "Oblivion",
+        "year": 2013,
+        "archetypes": {
+            "mind_bending": 0.7,
+            "adrenaline": 0.6
+        }
+    },
+    {
+        "title": "Edge of Tomorrow",
+        "year": 2014,
+        "archetypes": {
+            "mind_bending": 0.6,
+            "adrenaline": 0.85,
+            "light": 0.2
+        }
+    },
+    {
+        "title": "A Beautiful Mind",
+        "year": 2001,
+        "archetypes": {
+            "mind_bending": 0.7,
+            "emotional": 0.8,
+            "inspirational": 0.7
+        }
+    },
+    {
+        "title": "Stalker",
+        "year": 1979,
+        "archetypes": {
+            "mind_bending": 0.9,
+            "dark": 0.5,
+            "emotional": 0.4
+        }
+    },
+    {
+        "title": "Perfect Blue",
+        "year": 1997,
+        "archetypes": {
+            "mind_bending": 0.9,
+            "dark": 0.8
+        }
+    },
+    {
+        "title": "Se7en",
+        "year": 1995,
+        "archetypes": {
+            "dark": 0.95,
+            "mind_bending": 0.4,
+            "adrenaline": 0.4
+        }
+    },
+    {
+        "title": "Prisoners",
+        "year": 2013,
+        "archetypes": {
+            "dark": 0.9,
+            "emotional": 0.5,
+            "mind_bending": 0.4
+        }
+    },
+    {
+        "title": "Zodiac",
+        "year": 2007,
+        "archetypes": {
+            "dark": 0.85,
+            "mind_bending": 0.3
+        }
+    },
+    {
+        "title": "No Country for Old Men",
+        "year": 2007,
+        "archetypes": {
+            "dark": 0.9,
+            "adrenaline": 0.4
+        }
+    },
+    {
+        "title": "Sicario",
+        "year": 2015,
+        "archetypes": {
+            "dark": 0.85,
+            "adrenaline": 0.7
+        }
+    },
+    {
+        "title": "Gone Girl",
+        "year": 2014,
+        "archetypes": {
+            "dark": 0.9,
+            "mind_bending": 0.6
+        }
+    },
+    {
+        "title": "The Silence of the Lambs",
+        "year": 1991,
+        "archetypes": {
+            "dark": 0.9,
+            "mind_bending": 0.5,
+            "adrenaline": 0.3
+        }
+    },
+    {
+        "title": "Nightcrawler",
+        "year": 2014,
+        "archetypes": {
+            "dark": 0.9,
+            "mind_bending": 0.4
+        }
+    },
+    {
+        "title": "There Will Be Blood",
+        "year": 2007,
+        "archetypes": {
+            "dark": 0.85,
+            "emotional": 0.5
+        }
+    },
+    {
+        "title": "Apocalypse Now",
+        "year": 1979,
+        "archetypes": {
+            "dark": 0.9,
+            "emotional": 0.5,
+            "mind_bending": 0.4
+        }
+    },
+    {
+        "title": "Taxi Driver",
+        "year": 1976,
+        "archetypes": {
+            "dark": 0.9,
+            "emotional": 0.4,
+            "mind_bending": 0.3
+        }
+    },
+    {
+        "title": "Requiem for a Dream",
+        "year": 2000,
+        "archetypes": {
+            "dark": 0.95,
+            "emotional": 0.7
+        }
+    },
+    {
+        "title": "A Clockwork Orange",
+        "year": 1971,
+        "archetypes": {
+            "dark": 0.9,
+            "mind_bending": 0.6
+        }
+    },
+    {
+        "title": "The Departed",
+        "year": 2006,
+        "archetypes": {
+            "dark": 0.8,
+            "adrenaline": 0.6
+        }
+    },
+    {
+        "title": "Chinatown",
+        "year": 1974,
+        "archetypes": {
+            "dark": 0.85,
+            "mind_bending": 0.4
+        }
+    },
+    {
+        "title": "Training Day",
+        "year": 2001,
+        "archetypes": {
+            "dark": 0.8,
+            "adrenaline": 0.6
+        }
+    },
+    {
+        "title": "American Psycho",
+        "year": 2000,
+        "archetypes": {
+            "dark": 0.9,
+            "mind_bending": 0.5
+        }
+    },
+    {
+        "title": "Joker",
+        "year": 2019,
+        "archetypes": {
+            "dark": 0.9,
+            "emotional": 0.6,
+            "mind_bending": 0.3
+        }
+    },
+    {
+        "title": "Parasite",
+        "year": 2019,
+        "archetypes": {
+            "dark": 0.8,
+            "mind_bending": 0.5,
+            "emotional": 0.6
+        }
+    },
+    {
+        "title": "The House That Jack Built",
+        "year": 2018,
+        "archetypes": {
+            "dark": 0.95,
+            "mind_bending": 0.5
+        }
+    },
+    {
+        "title": "Wind River",
+        "year": 2017,
+        "archetypes": {
+            "dark": 0.85,
+            "emotional": 0.5,
+            "adrenaline": 0.3
+        }
+    },
+    {
+        "title": "Mystic River",
+        "year": 2003,
+        "archetypes": {
+            "dark": 0.85,
+            "emotional": 0.7
+        }
+    },
+    {
+        "title": "The Girl with the Dragon Tattoo",
+        "year": 2011,
+        "archetypes": {
+            "dark": 0.85,
+            "adrenaline": 0.4,
+            "mind_bending": 0.3
+        }
+    },
+    {
+        "title": "True Detective",
+        "year": 2014,
+        "archetypes": {
+            "dark": 0.9,
+            "mind_bending": 0.5,
+            "emotional": 0.3
+        }
+    },
+    {
+        "title": "The Killing of a Sacred Deer",
+        "year": 2017,
+        "archetypes": {
+            "dark": 0.9,
+            "mind_bending": 0.7
+        }
+    },
+    {
+        "title": "Uncut Gems",
+        "year": 2019,
+        "archetypes": {
+            "dark": 0.8,
+            "adrenaline": 0.7
+        }
+    },
+    {
+        "title": "City of God",
+        "year": 2002,
+        "archetypes": {
+            "dark": 0.85,
+            "adrenaline": 0.6,
+            "emotional": 0.4
+        }
+    },
+    {
+        "title": "The Witch",
+        "year": 2015,
+        "archetypes": {
+            "dark": 0.9,
+            "mind_bending": 0.4
+        }
+    },
+    {
+        "title": "You Were Never Really Here",
+        "year": 2017,
+        "archetypes": {
+            "dark": 0.9,
+            "emotional": 0.4,
+            "adrenaline": 0.3
+        }
+    },
+    {
+        "title": "Hereditary",
+        "year": 2018,
+        "archetypes": {
+            "dark": 0.9,
+            "mind_bending": 0.5,
+            "emotional": 0.4
+        }
+    },
+    {
+        "title": "The Lighthouse",
+        "year": 2019,
+        "archetypes": {
+            "dark": 0.85,
+            "mind_bending": 0.7
+        }
+    },
+    {
+        "title": "Midsommar",
+        "year": 2019,
+        "archetypes": {
+            "dark": 0.8,
+            "mind_bending": 0.6,
+            "emotional": 0.3
+        }
+    },
+    {
+        "title": "Under the Skin",
+        "year": 2013,
+        "archetypes": {
+            "dark": 0.8,
+            "mind_bending": 0.7
+        }
+    },
+    {
+        "title": "Blue Velvet",
+        "year": 1986,
+        "archetypes": {
+            "dark": 0.85,
+            "mind_bending": 0.6
+        }
+    },
+    {
+        "title": "Heat",
+        "year": 1995,
+        "archetypes": {
+            "dark": 0.7,
+            "adrenaline": 0.8
+        }
+    },
+    {
+        "title": "Fargo",
+        "year": 1996,
+        "archetypes": {
+            "dark": 0.8,
+            "mind_bending": 0.3,
+            "light": 0.2
+        }
+    },
+    {
+        "title": "The Revenant",
+        "year": 2015,
+        "archetypes": {
+            "dark": 0.8,
+            "adrenaline": 0.6,
+            "emotional": 0.4
+        }
+    },
+    {
+        "title": "Blood Diamond",
+        "year": 2006,
+        "archetypes": {
+            "dark": 0.7,
+            "adrenaline": 0.7,
+            "emotional": 0.4
+        }
+    },
+    {
+        "title": "The Crow",
+        "year": 1994,
+        "archetypes": {
+            "dark": 0.85,
+            "adrenaline": 0.5,
+            "emotional": 0.3
+        }
+    },
+    {
+        "title": "Caché",
+        "year": 2005,
+        "archetypes": {
+            "dark": 0.8,
+            "mind_bending": 0.7
+        }
+    },
+    {
+        "title": "Insomnia",
+        "year": 2002,
+        "archetypes": {
+            "dark": 0.75,
+            "mind_bending": 0.4
+        }
+    },
+    {
+        "title": "The Shawshank Redemption",
+        "year": 1994,
+        "archetypes": {
+            "emotional": 0.9,
+            "inspirational": 0.9,
+            "dark": 0.3
+        }
+    },
+    {
+        "title": "Schindler's List",
+        "year": 1993,
+        "archetypes": {
+            "emotional": 0.95,
+            "dark": 0.7,
+            "inspirational": 0.6
+        }
+    },
+    {
+        "title": "Good Will Hunting",
+        "year": 1997,
+        "archetypes": {
+            "emotional": 0.9,
+            "inspirational": 0.7,
+            "light": 0.3
+        }
+    },
+    {
+        "title": "Forrest Gump",
+        "year": 1994,
+        "archetypes": {
+            "emotional": 0.8,
+            "inspirational": 0.7,
+            "light": 0.5
+        }
+    },
+    {
+        "title": "The Green Mile",
+        "year": 1999,
+        "archetypes": {
+            "emotional": 0.9,
+            "dark": 0.4,
+            "inspirational": 0.5
+        }
+    },
+    {
+        "title": "Manchester by the Sea",
+        "year": 2016,
+        "archetypes": {
+            "emotional": 0.95,
+            "dark": 0.3
+        }
+    },
+    {
+        "title": "Moonlight",
+        "year": 2016,
+        "archetypes": {
+            "emotional": 0.9,
+            "dark": 0.4,
+            "inspirational": 0.3
+        }
+    },
+    {
+        "title": "Marriage Story",
+        "year": 2019,
+        "archetypes": {
+            "emotional": 0.9,
+            "light": 0.2
+        }
+    },
+    {
+        "title": "Blue Valentine",
+        "year": 2010,
+        "archetypes": {
+            "emotional": 0.9,
+            "dark": 0.5
+        }
+    },
+    {
+        "title": "Atonement",
+        "year": 2007,
+        "archetypes": {
+            "emotional": 0.9,
+            "dark": 0.4
+        }
+    },
+    {
+        "title": "Her",
+        "year": 2013,
+        "archetypes": {
+            "emotional": 0.8,
+            "mind_bending": 0.4,
+            "light": 0.3
+        }
+    },
+    {
+        "title": "12 Years a Slave",
+        "year": 2013,
+        "archetypes": {
+            "emotional": 0.95,
+            "dark": 0.7,
+            "inspirational": 0.4
+        }
+    },
+    {
+        "title": "The Pianist",
+        "year": 2002,
+        "archetypes": {
+            "emotional": 0.9,
+            "dark": 0.7,
+            "inspirational": 0.4
+        }
+    },
+    {
+        "title": "Room",
+        "year": 2015,
+        "archetypes": {
+            "emotional": 0.9,
+            "dark": 0.5,
+            "inspirational": 0.5
+        }
+    },
+    {
+        "title": "The Pursuit of Happyness",
+        "year": 2006,
+        "archetypes": {
+            "emotional": 0.85,
+            "inspirational": 0.9
+        }
+    },
+    {
+        "title": "Call Me by Your Name",
+        "year": 2017,
+        "archetypes": {
+            "emotional": 0.85,
+            "light": 0.4
+        }
+    },
+    {
+        "title": "Grave of the Fireflies",
+        "year": 1988,
+        "archetypes": {
+            "emotional": 0.95,
+            "dark": 0.6
+        }
+    },
+    {
+        "title": "Life Is Beautiful",
+        "year": 1997,
+        "archetypes": {
+            "emotional": 0.9,
+            "inspirational": 0.7,
+            "light": 0.4,
+            "dark": 0.3
+        }
+    },
+    {
+        "title": "Philadelphia",
+        "year": 1993,
+        "archetypes": {
+            "emotional": 0.85,
+            "inspirational": 0.6,
+            "dark": 0.3
+        }
+    },
+    {
+        "title": "The Fault in Our Stars",
+        "year": 2014,
+        "archetypes": {
+            "emotional": 0.85,
+            "light": 0.4,
+            "inspirational": 0.3
+        }
+    },
+    {
+        "title": "Amour",
+        "year": 2012,
+        "archetypes": {
+            "emotional": 0.95,
+            "dark": 0.4
+        }
+    },
+    {
+        "title": "Still Alice",
+        "year": 2014,
+        "archetypes": {
+            "emotional": 0.9,
+            "dark": 0.4
+        }
+    },
+    {
+        "title": "Nomadland",
+        "year": 2020,
+        "archetypes": {
+            "emotional": 0.8,
+            "inspirational": 0.4,
+            "light": 0.3
+        }
+    },
+    {
+        "title": "Drive My Car",
+        "year": 2021,
+        "archetypes": {
+            "emotional": 0.85,
+            "mind_bending": 0.2
+        }
+    },
+    {
+        "title": "The Father",
+        "year": 2020,
+        "archetypes": {
+            "emotional": 0.9,
+            "mind_bending": 0.5,
+            "dark": 0.4
+        }
+    },
+    {
+        "title": "Boyhood",
+        "year": 2014,
+        "archetypes": {
+            "emotional": 0.8,
+            "light": 0.5,
+            "inspirational": 0.3
+        }
+    },
+    {
+        "title": "A Separation",
+        "year": 2011,
+        "archetypes": {
+            "emotional": 0.9,
+            "dark": 0.4
+        }
+    },
+    {
+        "title": "Cinema Paradiso",
+        "year": 1988,
+        "archetypes": {
+            "emotional": 0.9,
+            "light": 0.6,
+            "inspirational": 0.5
+        }
+    },
+    {
+        "title": "Spotlight",
+        "year": 2015,
+        "archetypes": {
+            "emotional": 0.7,
+            "dark": 0.5,
+            "inspirational": 0.4
+        }
+    },
+    {
+        "title": "Babel",
+        "year": 2006,
+        "archetypes": {
+            "emotional": 0.85,
+            "dark": 0.5
+        }
+    },
+    {
+        "title": "Million Dollar Baby",
+        "year": 2004,
+        "archetypes": {
+            "emotional": 0.9,
+            "dark": 0.5,
+            "inspirational": 0.5
+        }
+    },
+    {
+        "title": "Brokeback Mountain",
+        "year": 2005,
+        "archetypes": {
+            "emotional": 0.9,
+            "dark": 0.3
+        }
+    },
+    {
+        "title": "Hachi: A Dog's Tale",
+        "year": 2009,
+        "archetypes": {
+            "emotional": 0.95,
+            "light": 0.4,
+            "inspirational": 0.3
+        }
+    },
+    {
+        "title": "The Diving Bell and the Butterfly",
+        "year": 2007,
+        "archetypes": {
+            "emotional": 0.9,
+            "inspirational": 0.5
+        }
+    },
+    {
+        "title": "Capernaum",
+        "year": 2018,
+        "archetypes": {
+            "emotional": 0.9,
+            "dark": 0.6,
+            "inspirational": 0.3
+        }
+    },
+    {
+        "title": "Minari",
+        "year": 2020,
+        "archetypes": {
+            "emotional": 0.8,
+            "light": 0.5,
+            "inspirational": 0.4
+        }
+    },
+    {
+        "title": "Portrait of a Lady on Fire",
+        "year": 2019,
+        "archetypes": {
+            "emotional": 0.85,
+            "light": 0.3
+        }
+    },
+    {
+        "title": "The Intouchables",
+        "year": 2011,
+        "archetypes": {
+            "emotional": 0.7,
+            "inspirational": 0.8,
+            "light": 0.6
+        }
+    },
+    {
+        "title": "Whiplash",
+        "year": 2014,
+        "archetypes": {
+            "emotional": 0.7,
+            "dark": 0.5,
+            "adrenaline": 0.5,
+            "inspirational": 0.4
+        }
+    },
+    {
+        "title": "Rocky",
+        "year": 1976,
+        "archetypes": {
+            "inspirational": 0.9,
+            "adrenaline": 0.5,
+            "emotional": 0.5
+        }
+    },
+    {
+        "title": "The Blind Side",
+        "year": 2009,
+        "archetypes": {
+            "inspirational": 0.85,
+            "emotional": 0.6,
+            "light": 0.5
+        }
+    },
+    {
+        "title": "Slumdog Millionaire",
+        "year": 2008,
+        "archetypes": {
+            "inspirational": 0.85,
+            "emotional": 0.7,
+            "adrenaline": 0.3
+        }
+    },
+    {
+        "title": "Dead Poets Society",
+        "year": 1989,
+        "archetypes": {
+            "inspirational": 0.9,
+            "emotional": 0.8
+        }
+    },
+    {
+        "title": "The King's Speech",
+        "year": 2010,
+        "archetypes": {
+            "inspirational": 0.85,
+            "emotional": 0.6
+        }
+    },
+    {
+        "title": "Hidden Figures",
+        "year": 2016,
+        "archetypes": {
+            "inspirational": 0.9,
+            "emotional": 0.5,
+            "light": 0.3
+        }
+    },
+    {
+        "title": "Gandhi",
+        "year": 1982,
+        "archetypes": {
+            "inspirational": 0.95,
+            "emotional": 0.7
+        }
+    },
+    {
+        "title": "Remember the Titans",
+        "year": 2000,
+        "archetypes": {
+            "inspirational": 0.85,
+            "emotional": 0.5,
+            "light": 0.4
+        }
+    },
+    {
+        "title": "Erin Brockovich",
+        "year": 2000,
+        "archetypes": {
+            "inspirational": 0.8,
+            "emotional": 0.5
+        }
+    },
+    {
+        "title": "127 Hours",
+        "year": 2010,
+        "archetypes": {
+            "inspirational": 0.8,
+            "adrenaline": 0.6,
+            "emotional": 0.5
+        }
+    },
+    {
+        "title": "Coach Carter",
+        "year": 2005,
+        "archetypes": {
+            "inspirational": 0.85,
+            "emotional": 0.5,
+            "light": 0.3
+        }
+    },
+    {
+        "title": "The Theory of Everything",
+        "year": 2014,
+        "archetypes": {
+            "inspirational": 0.85,
+            "emotional": 0.7
+        }
+    },
+    {
+        "title": "Billy Elliot",
+        "year": 2000,
+        "archetypes": {
+            "inspirational": 0.85,
+            "emotional": 0.6,
+            "light": 0.5
+        }
+    },
+    {
+        "title": "Freedom Writers",
+        "year": 2007,
+        "archetypes": {
+            "inspirational": 0.85,
+            "emotional": 0.6
+        }
+    },
+    {
+        "title": "Soul",
+        "year": 2020,
+        "archetypes": {
+            "inspirational": 0.8,
+            "emotional": 0.5,
+            "light": 0.6,
+            "mind_bending": 0.3
+        }
+    },
+    {
+        "title": "Wonder",
+        "year": 2017,
+        "archetypes": {
+            "inspirational": 0.85,
+            "emotional": 0.7,
+            "light": 0.6
+        }
+    },
+    {
+        "title": "Coco",
+        "year": 2017,
+        "archetypes": {
+            "inspirational": 0.7,
+            "emotional": 0.8,
+            "light": 0.6
+        }
+    },
+    {
+        "title": "Dangal",
+        "year": 2016,
+        "archetypes": {
+            "inspirational": 0.9,
+            "emotional": 0.6,
+            "adrenaline": 0.4
+        }
+    },
+    {
+        "title": "The Imitation Game",
+        "year": 2014,
+        "archetypes": {
+            "inspirational": 0.8,
+            "emotional": 0.6,
+            "dark": 0.3
+        }
+    },
+    {
+        "title": "Hacksaw Ridge",
+        "year": 2016,
+        "archetypes": {
+            "inspirational": 0.85,
+            "adrenaline": 0.6,
+            "emotional": 0.6,
+            "dark": 0.4
+        }
+    },
+    {
+        "title": "Lion",
+        "year": 2016,
+        "archetypes": {
+            "inspirational": 0.8,
+            "emotional": 0.85
+        }
+    },
+    {
+        "title": "Invictus",
+        "year": 2009,
+        "archetypes": {
+            "inspirational": 0.85,
+            "emotional": 0.5
+        }
+    },
+    {
+        "title": "October Sky",
+        "year": 1999,
+        "archetypes": {
+            "inspirational": 0.85,
+            "emotional": 0.6,
+            "light": 0.4
+        }
+    },
+    {
+        "title": "Moneyball",
+        "year": 2011,
+        "archetypes": {
+            "inspirational": 0.7,
+            "emotional": 0.4
+        }
+    },
+    {
+        "title": "Ford v Ferrari",
+        "year": 2019,
+        "archetypes": {
+            "inspirational": 0.7,
+            "adrenaline": 0.7
+        }
+    },
+    {
+        "title": "Rudy",
+        "year": 1993,
+        "archetypes": {
+            "inspirational": 0.9,
+            "emotional": 0.6,
+            "light": 0.4
+        }
+    },
+    {
+        "title": "Chariots of Fire",
+        "year": 1981,
+        "archetypes": {
+            "inspirational": 0.85,
+            "emotional": 0.5
+        }
+    },
+    {
+        "title": "3 Idiots",
+        "year": 2009,
+        "archetypes": {
+            "inspirational": 0.85,
+            "light": 0.6,
+            "emotional": 0.5
+        }
+    },
+    {
+        "title": "Ratatouille",
+        "year": 2007,
+        "archetypes": {
+            "inspirational": 0.7,
+            "light": 0.8
+        }
+    },
+    {
+        "title": "WALL-E",
+        "year": 2008,
+        "archetypes": {
+            "inspirational": 0.6,
+            "emotional": 0.5,
+            "light": 0.7
+        }
+    },
+    {
+        "title": "Mad Max: Fury Road",
+        "year": 2015,
+        "archetypes": {
+            "adrenaline": 0.95,
+            "dark": 0.5
+        }
+    },
+    {
+        "title": "John Wick",
+        "year": 2014,
+        "archetypes": {
+            "adrenaline": 0.9,
+            "dark": 0.5
+        }
+    },
+    {
+        "title": "The Dark Knight",
+        "year": 2008,
+        "archetypes": {
+            "adrenaline": 0.8,
+            "dark": 0.7,
+            "mind_bending": 0.3
+        }
+    },
+    {
+        "title": "Die Hard",
+        "year": 1988,
+        "archetypes": {
+            "adrenaline": 0.9,
+            "light": 0.3
+        }
+    },
+    {
+        "title": "Kill Bill: Volume 1",
+        "year": 2003,
+        "archetypes": {
+            "adrenaline": 0.9,
+            "dark": 0.5
+        }
+    },
+    {
+        "title": "Gladiator",
+        "year": 2000,
+        "archetypes": {
+            "adrenaline": 0.8,
+            "emotional": 0.5,
+            "inspirational": 0.4
+        }
+    },
+    {
+        "title": "Aliens",
+        "year": 1986,
+        "archetypes": {
+            "adrenaline": 0.9,
+            "dark": 0.5
+        }
+    },
+    {
+        "title": "The Raid",
+        "year": 2011,
+        "archetypes": {
+            "adrenaline": 0.95,
+            "dark": 0.4
+        }
+    },
+    {
+        "title": "Speed",
+        "year": 1994,
+        "archetypes": {
+            "adrenaline": 0.85,
+            "light": 0.2
+        }
+    },
+    {
+        "title": "Terminator 2: Judgment Day",
+        "year": 1991,
+        "archetypes": {
+            "adrenaline": 0.9,
+            "emotional": 0.3
+        }
+    },
+    {
+        "title": "Casino Royale",
+        "year": 2006,
+        "archetypes": {
+            "adrenaline": 0.85,
+            "dark": 0.4
+        }
+    },
+    {
+        "title": "Mission: Impossible - Fallout",
+        "year": 2018,
+        "archetypes": {
+            "adrenaline": 0.9
+        }
+    },
+    {
+        "title": "Ip Man",
+        "year": 2008,
+        "archetypes": {
+            "adrenaline": 0.8,
+            "inspirational": 0.5,
+            "emotional": 0.3
+        }
+    },
+    {
+        "title": "The Bourne Ultimatum",
+        "year": 2007,
+        "archetypes": {
+            "adrenaline": 0.85,
+            "dark": 0.3,
+            "mind_bending": 0.2
+        }
+    },
+    {
+        "title": "Dunkirk",
+        "year": 2017,
+        "archetypes": {
+            "adrenaline": 0.85,
+            "dark": 0.5,
+            "emotional": 0.4
+        }
+    },
+    {
+        "title": "Saving Private Ryan",
+        "year": 1998,
+        "archetypes": {
+            "adrenaline": 0.8,
+            "emotional": 0.7,
+            "dark": 0.6
+        }
+    },
+    {
+        "title": "Top Gun: Maverick",
+        "year": 2022,
+        "archetypes": {
+            "adrenaline": 0.85,
+            "inspirational": 0.4,
+            "light": 0.3
+        }
+    },
+    {
+        "title": "300",
+        "year": 2006,
+        "archetypes": {
+            "adrenaline": 0.9,
+            "dark": 0.4
+        }
+    },
+    {
+        "title": "Fury",
+        "year": 2014,
+        "archetypes": {
+            "adrenaline": 0.8,
+            "dark": 0.7,
+            "emotional": 0.4
+        }
+    },
+    {
+        "title": "Black Hawk Down",
+        "year": 2001,
+        "archetypes": {
+            "adrenaline": 0.85,
+            "dark": 0.6
+        }
+    },
+    {
+        "title": "Dredd",
+        "year": 2012,
+        "archetypes": {
+            "adrenaline": 0.85,
+            "dark": 0.6
+        }
+    },
+    {
+        "title": "Snowpiercer",
+        "year": 2013,
+        "archetypes": {
+            "adrenaline": 0.7,
+            "dark": 0.7,
+            "mind_bending": 0.4
+        }
+    },
+    {
+        "title": "Baby Driver",
+        "year": 2017,
+        "archetypes": {
+            "adrenaline": 0.85,
+            "light": 0.4
+        }
+    },
+    {
+        "title": "Drive",
+        "year": 2011,
+        "archetypes": {
+            "adrenaline": 0.6,
+            "dark": 0.7,
+            "emotional": 0.3
+        }
+    },
+    {
+        "title": "Extraction",
+        "year": 2020,
+        "archetypes": {
+            "adrenaline": 0.9,
+            "dark": 0.4
+        }
+    },
+    {
+        "title": "District 9",
+        "year": 2009,
+        "archetypes": {
+            "adrenaline": 0.7,
+            "dark": 0.6,
+            "mind_bending": 0.3,
+            "emotional": 0.3
+        }
+    },
+    {
+        "title": "Logan",
+        "year": 2017,
+        "archetypes": {
+            "adrenaline": 0.7,
+            "dark": 0.7,
+            "emotional": 0.6
+        }
+    },
+    {
+        "title": "The Raid 2",
+        "year": 2014,
+        "archetypes": {
+            "adrenaline": 0.9,
+            "dark": 0.5
+        }
+    },
+    {
+        "title": "Crouching Tiger, Hidden Dragon",
+        "year": 2000,
+        "archetypes": {
+            "adrenaline": 0.7,
+            "emotional": 0.6,
+            "inspirational": 0.3
+        }
+    },
+    {
+        "title": "Warrior",
+        "year": 2011,
+        "archetypes": {
+            "adrenaline": 0.8,
+            "emotional": 0.7,
+            "inspirational": 0.6
+        }
+    },
+    {
+        "title": "Predator",
+        "year": 1987,
+        "archetypes": {
+            "adrenaline": 0.85,
+            "dark": 0.4
+        }
+    },
+    {
+        "title": "Atomic Blonde",
+        "year": 2017,
+        "archetypes": {
+            "adrenaline": 0.85,
+            "dark": 0.4
+        }
+    },
+    {
+        "title": "Blade Runner 2049",
+        "year": 2017,
+        "archetypes": {
+            "adrenaline": 0.4,
+            "dark": 0.6,
+            "mind_bending": 0.8,
+            "emotional": 0.4
+        }
+    },
+    {
+        "title": "Upgrade",
+        "year": 2018,
+        "archetypes": {
+            "adrenaline": 0.8,
+            "dark": 0.6,
+            "mind_bending": 0.5
+        }
+    },
+    {
+        "title": "Taken",
+        "year": 2008,
+        "archetypes": {
+            "adrenaline": 0.85,
+            "dark": 0.4
+        }
+    },
+    {
+        "title": "Unleashed",
+        "year": 2005,
+        "archetypes": {
+            "adrenaline": 0.8,
+            "dark": 0.5,
+            "emotional": 0.4
+        }
+    },
+    {
+        "title": "Rashomon",
+        "year": 1950,
+        "archetypes": {
+            "mind_bending": 0.9,
+            "dark": 0.5,
+            "emotional": 0.4
+        }
+    },
+    {
+        "title": "Pan's Labyrinth",
+        "year": 2006,
+        "archetypes": {
+            "dark": 0.7,
+            "emotional": 0.7,
+            "mind_bending": 0.6
+        }
+    },
+    {
+        "title": "The Hunt",
+        "year": 2012,
+        "archetypes": {
+            "emotional": 0.9,
+            "dark": 0.7
+        }
+    },
+    {
+        "title": "Shoplifters",
+        "year": 2018,
+        "archetypes": {
+            "emotional": 0.85,
+            "light": 0.4,
+            "dark": 0.3
+        }
+    },
+    {
+        "title": "The Lives of Others",
+        "year": 2006,
+        "archetypes": {
+            "dark": 0.7,
+            "emotional": 0.8,
+            "inspirational": 0.3
+        }
+    },
+    {
+        "title": "Burning",
+        "year": 2018,
+        "archetypes": {
+            "dark": 0.8,
+            "mind_bending": 0.7,
+            "emotional": 0.4
+        }
+    },
+    {
+        "title": "Y Tu Mamá También",
+        "year": 2001,
+        "archetypes": {
+            "emotional": 0.7,
+            "light": 0.5
+        }
+    },
+    {
+        "title": "The Handmaiden",
+        "year": 2016,
+        "archetypes": {
+            "mind_bending": 0.7,
+            "dark": 0.6,
+            "emotional": 0.5
+        }
+    },
+    {
+        "title": "Le Samouraï",
+        "year": 1967,
+        "archetypes": {
+            "dark": 0.7,
+            "adrenaline": 0.5
+        }
+    },
+    {
+        "title": "The Secret in Their Eyes",
+        "year": 2009,
+        "archetypes": {
+            "dark": 0.7,
+            "emotional": 0.7,
+            "mind_bending": 0.4
+        }
+    },
+    {
+        "title": "Elite Squad",
+        "year": 2007,
+        "archetypes": {
+            "adrenaline": 0.8,
+            "dark": 0.7
+        }
+    },
+    {
+        "title": "Incendies",
+        "year": 2010,
+        "archetypes": {
+            "dark": 0.8,
+            "emotional": 0.9,
+            "mind_bending": 0.6
+        }
+    },
+    {
+        "title": "A Prophet",
+        "year": 2009,
+        "archetypes": {
+            "dark": 0.85,
+            "adrenaline": 0.5
+        }
+    },
+    {
+        "title": "Your Name",
+        "year": 2016,
+        "archetypes": {
+            "emotional": 0.8,
+            "light": 0.7,
+            "mind_bending": 0.4
+        }
+    },
+    {
+        "title": "The Farewell",
+        "year": 2019,
+        "archetypes": {
+            "emotional": 0.8,
+            "light": 0.5
+        }
+    },
+    {
+        "title": "Wild Tales",
+        "year": 2014,
+        "archetypes": {
+            "dark": 0.7,
+            "adrenaline": 0.5,
+            "light": 0.3
+        }
+    },
+    {
+        "title": "Ip Man 2",
+        "year": 2010,
+        "archetypes": {
+            "adrenaline": 0.8,
+            "inspirational": 0.5
+        }
+    },
+    {
+        "title": "Once Upon a Time in the West",
+        "year": 1968,
+        "archetypes": {
+            "adrenaline": 0.6,
+            "dark": 0.5,
+            "emotional": 0.4
+        }
+    },
+    {
+        "title": "Toy Story",
+        "year": 1995,
+        "archetypes": {
+            "light": 0.9,
+            "emotional": 0.5
+        }
+    },
+    {
+        "title": "Finding Nemo",
+        "year": 2003,
+        "archetypes": {
+            "light": 0.85,
+            "emotional": 0.6,
+            "inspirational": 0.3
+        }
+    },
+    {
+        "title": "Nobody",
+        "year": 2021,
+        "archetypes": {
+            "adrenaline": 0.85,
+            "dark": 0.4,
+            "light": 0.2
+        }
+    },
+    {
+        "title": "The Equalizer",
+        "year": 2014,
+        "archetypes": {
+            "adrenaline": 0.85,
+            "dark": 0.5
+        }
+    },
+    {
+        "title": "Kung Fu Hustle",
+        "year": 2004,
+        "archetypes": {
+            "adrenaline": 0.7,
+            "light": 0.7
+        }
+    },
+    {
+        "title": "Point Break",
+        "year": 1991,
+        "archetypes": {
+            "adrenaline": 0.85,
+            "light": 0.3
+        }
+    },
+    {
+        "title": "Amélie",
+        "year": 2001,
+        "archetypes": {
+            "light": 0.9,
+            "emotional": 0.5,
+            "inspirational": 0.4
+        }
+    },
+    {
+        "title": "Little Miss Sunshine",
+        "year": 2006,
+        "archetypes": {
+            "light": 0.85,
+            "emotional": 0.6,
+            "inspirational": 0.4
+        }
+    },
+    {
+        "title": "The Grand Budapest Hotel",
+        "year": 2014,
+        "archetypes": {
+            "light": 0.8,
+            "emotional": 0.3
+        }
+    },
+    {
+        "title": "My Neighbor Totoro",
+        "year": 1988,
+        "archetypes": {
+            "light": 0.95,
+            "emotional": 0.4
+        }
+    },
+    {
+        "title": "Spirited Away",
+        "year": 2001,
+        "archetypes": {
+            "light": 0.7,
+            "mind_bending": 0.5,
+            "emotional": 0.5
+        }
+    },
+    {
+        "title": "Paddington 2",
+        "year": 2017,
+        "archetypes": {
+            "light": 0.9,
+            "inspirational": 0.3
+        }
+    },
+    {
+        "title": "Juno",
+        "year": 2007,
+        "archetypes": {
+            "light": 0.8,
+            "emotional": 0.5
+        }
+    },
+    {
+        "title": "About Time",
+        "year": 2013,
+        "archetypes": {
+            "light": 0.8,
+            "emotional": 0.6,
+            "mind_bending": 0.3
+        }
+    },
+    {
+        "title": "Moonrise Kingdom",
+        "year": 2012,
+        "archetypes": {
+            "light": 0.85,
+            "emotional": 0.4
+        }
+    },
+    {
+        "title": "The Princess Bride",
+        "year": 1987,
+        "archetypes": {
+            "light": 0.9,
+            "adrenaline": 0.3
+        }
+    },
+    {
+        "title": "Superbad",
+        "year": 2007,
+        "archetypes": {
+            "light": 0.85
+        }
+    },
+    {
+        "title": "Ferris Bueller's Day Off",
+        "year": 1986,
+        "archetypes": {
+            "light": 0.9,
+            "inspirational": 0.2
+        }
+    },
+    {
+        "title": "Groundhog Day",
+        "year": 1993,
+        "archetypes": {
+            "light": 0.8,
+            "mind_bending": 0.4,
+            "emotional": 0.3
+        }
+    },
+    {
+        "title": "Up",
+        "year": 2009,
+        "archetypes": {
+            "light": 0.7,
+            "emotional": 0.8,
+            "inspirational": 0.4
+        }
+    },
+    {
+        "title": "Inside Out",
+        "year": 2015,
+        "archetypes": {
+            "light": 0.7,
+            "emotional": 0.7,
+            "mind_bending": 0.3
+        }
+    },
+    {
+        "title": "The Secret Life of Walter Mitty",
+        "year": 2013,
+        "archetypes": {
+            "light": 0.7,
+            "inspirational": 0.7,
+            "emotional": 0.3
+        }
+    },
+    {
+        "title": "Chef",
+        "year": 2014,
+        "archetypes": {
+            "light": 0.85,
+            "inspirational": 0.4
+        }
+    },
+    {
+        "title": "Fantastic Mr. Fox",
+        "year": 2009,
+        "archetypes": {
+            "light": 0.85,
+            "adrenaline": 0.3
+        }
+    },
+    {
+        "title": "Hunt for the Wilderpeople",
+        "year": 2016,
+        "archetypes": {
+            "light": 0.85,
+            "emotional": 0.4
+        }
+    },
+    {
+        "title": "The Way Way Back",
+        "year": 2013,
+        "archetypes": {
+            "light": 0.8,
+            "emotional": 0.5
+        }
+    },
+    {
+        "title": "Sing Street",
+        "year": 2016,
+        "archetypes": {
+            "light": 0.8,
+            "inspirational": 0.6,
+            "emotional": 0.4
+        }
+    },
+    {
+        "title": "Peanut Butter Falcon",
+        "year": 2019,
+        "archetypes": {
+            "light": 0.8,
+            "inspirational": 0.6,
+            "emotional": 0.5
+        }
+    },
+    {
+        "title": "Stardust",
+        "year": 2007,
+        "archetypes": {
+            "light": 0.85,
+            "adrenaline": 0.3
+        }
+    },
+    {
+        "title": "Howl's Moving Castle",
+        "year": 2004,
+        "archetypes": {
+            "light": 0.8,
+            "emotional": 0.5,
+            "mind_bending": 0.3
+        }
+    },
+    {
+        "title": "Begin Again",
+        "year": 2013,
+        "archetypes": {
+            "light": 0.8,
+            "emotional": 0.5,
+            "inspirational": 0.4
+        }
+    },
+    {
+        "title": "The Breakfast Club",
+        "year": 1985,
+        "archetypes": {
+            "light": 0.7,
+            "emotional": 0.6
+        }
+    },
+    {
+        "title": "Kiki's Delivery Service",
+        "year": 1989,
+        "archetypes": {
+            "light": 0.9,
+            "inspirational": 0.4
+        }
+    },
+    {
+        "title": "Waking Ned Devine",
+        "year": 1998,
+        "archetypes": {
+            "light": 0.85,
+            "emotional": 0.3
+        }
+    },
+    {
+        "title": "School of Rock",
+        "year": 2003,
+        "archetypes": {
+            "light": 0.85,
+            "inspirational": 0.4
+        }
+    },
+    {
+        "title": "Notting Hill",
+        "year": 1999,
+        "archetypes": {
+            "light": 0.85,
+            "emotional": 0.4
+        }
+    },
+    {
+        "title": "Palm Springs",
+        "year": 2020,
+        "archetypes": {
+            "light": 0.7,
+            "mind_bending": 0.5,
+            "emotional": 0.3
+        }
+    },
+    {
+        "title": "The Lunchbox",
+        "year": 2013,
+        "archetypes": {
+            "light": 0.7,
+            "emotional": 0.7
+        }
+    },
+    {
+        "title": "In the Mood for Love",
+        "year": 2000,
+        "archetypes": {
+            "emotional": 0.85,
+            "light": 0.3
+        }
+    },
+    {
+        "title": "Lilo & Stitch",
+        "year": 2002,
+        "archetypes": {
+            "light": 0.85,
+            "emotional": 0.5
+        }
+    },
+    {
+        "title": "Lost in Translation",
+        "year": 2003,
+        "archetypes": {
+            "emotional": 0.7,
+            "light": 0.5
+        }
+    },
+    {
+        "title": "When Harry Met Sally...",
+        "year": 1989,
+        "archetypes": {
+            "light": 0.85,
+            "emotional": 0.4
+        }
+    },
+    {
+        "title": "Lars and the Real Girl",
+        "year": 2007,
+        "archetypes": {
+            "light": 0.7,
+            "emotional": 0.6
+        }
+    },
+    {
+        "title": "The Hundred-Foot Journey",
+        "year": 2014,
+        "archetypes": {
+            "light": 0.75,
+            "inspirational": 0.5,
+            "emotional": 0.4
+        }
+    },
+    {
+        "title": "The Darjeeling Limited",
+        "year": 2007,
+        "archetypes": {
+            "light": 0.7,
+            "emotional": 0.5
+        }
+    },
+    {
+        "title": "My Big Fat Greek Wedding",
+        "year": 2002,
+        "archetypes": {
+            "light": 0.85,
+            "emotional": 0.3
+        }
+    }
+]

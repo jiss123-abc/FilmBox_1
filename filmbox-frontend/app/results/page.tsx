@@ -5,7 +5,9 @@ import { useSearchParams } from "next/navigation"
 import { explore } from "@/lib/api"
 import { Movie } from "@/types/movie"
 import MovieCard from "@/components/MovieCard"
+import Skeleton from "@/components/Skeleton"
 import Link from "next/link"
+import { motion, AnimatePresence } from "framer-motion"
 
 function ResultsContent() {
     const params = useSearchParams()
@@ -14,6 +16,7 @@ function ResultsContent() {
     const [results, setResults] = useState<Movie[]>([])
     const [archetype, setArchetype] = useState("")
     const [explanation, setExplanation] = useState("")
+    const [emotionalVector, setEmotionalVector] = useState<Record<string, number> | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState("")
 
@@ -24,6 +27,7 @@ function ResultsContent() {
                 setResults(data.results)
                 setArchetype(data.archetype)
                 setExplanation(data.explanation || "")
+                setEmotionalVector(data.emotional_vector || null)
             } catch (err) {
                 console.error(err)
                 setError("Failed to fetch recommendations. Please try again.")
@@ -37,10 +41,13 @@ function ResultsContent() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center">
-                <div className="w-10 h-10 border-2 border-violet-500 border-t-transparent rounded-full animate-spin mb-4" />
-                <p className="text-zinc-400">Analyzing your vibe...</p>
-            </div>
+            <main className="min-h-screen bg-black text-white p-8 relative overflow-hidden">
+                <div className="relative z-10 max-w-6xl mx-auto">
+                    <div className="h-8 w-48 bg-zinc-900 rounded-lg animate-pulse mb-8" />
+                    <div className="h-12 w-96 bg-zinc-900 rounded-lg animate-pulse mb-12" />
+                    <Skeleton />
+                </div>
+            </main>
         )
     }
 
@@ -78,22 +85,51 @@ function ResultsContent() {
 
                 {/* Archetype Badge */}
                 {archetype && (
-                    <div className="flex items-center gap-3 mb-2">
-                        <span className="px-3 py-1 rounded-full bg-violet-600/20 border border-violet-500/30 text-violet-300 text-sm">
-                            {archetype}
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="flex items-center gap-3 mb-2"
+                    >
+                        <span className="px-4 py-1 rounded-full bg-violet-600/20 border border-violet-500/30 text-violet-300 text-xs font-medium uppercase tracking-widest">
+                            Detected: {archetype}
                         </span>
-                    </div>
+                    </motion.div>
                 )}
 
                 {/* Explanation */}
                 {explanation && (
-                    <p className="text-zinc-400 text-sm mb-8 max-w-2xl">{explanation}</p>
+                    <p className="text-zinc-400 text-sm mb-4 max-w-2xl">{explanation}</p>
+                )}
+
+                {/* Emotional Fingerprint Visualization */}
+                {emotionalVector && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                        className="flex flex-wrap gap-2 mb-8"
+                    >
+                        {Object.entries(emotionalVector)
+                            .filter(([_, val]) => val > 0.05)
+                            .sort((a, b) => b[1] - a[1])
+                            .map(([key, val]) => (
+                                <span key={key} className="px-3 py-1.5 rounded-full bg-zinc-800/50 border border-zinc-700/50 text-zinc-300 text-xs tracking-wide flex items-center shadow-inner">
+                                    <span className="capitalize text-violet-100">{key.replace('_', ' ')}</span>
+                                    <span className="ml-2 text-violet-400/80 font-mono">{(val * 100).toFixed(0)}%</span>
+                                </span>
+                            ))}
+                    </motion.div>
                 )}
 
                 {/* Results Grid */}
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {results.map((movie, index) => (
-                        <MovieCard key={movie.id} movie={movie} rank={index + 1} />
+                        <MovieCard
+                            key={movie.id}
+                            movie={movie}
+                            rank={index + 1}
+                            index={index}
+                        />
                     ))}
                 </div>
 

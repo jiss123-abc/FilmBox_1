@@ -21,3 +21,13 @@ html {
   background: rgba(139, 92, 246, 0.3);
   color: white;
 }
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
