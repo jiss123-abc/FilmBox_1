@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, Request, Header
+from fastapi import FastAPI, Depends, HTTPException, Request, Header, Query
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from sqlalchemy import text
@@ -11,11 +11,13 @@ load_dotenv()
 
 # Absolute imports for package reliability
 from .database import SessionLocal
-from .scoring import get_recommendations, get_vector_recommendations, compute_user_vector
+from .scoring import get_recommendations, get_vector_recommendations, compute_user_vector, search_by_person
 from .models import RecommendationResponse, ErrorResponse, InteractionRequest, InteractionResponse, ProfileResponse
 from .intent_classifier import classify_archetype, classify_emotional_vector
+from .query_builder import execute_discovery
 from .tmdb_service import search_movie, fetch_movie_details
 from .archetype_tagger import tag_movie, ARCHETYPES as TAG_ARCHETYPES
+from .context_search import ensure_fts_index, search_by_context, search_by_keywords_multi
 
 
 app = FastAPI(title="FILMBOX API")
@@ -51,7 +53,10 @@ def compute_global_average():
         GLOBAL_C = db.execute(
             text("SELECT AVG(vote_average) FROM movies")
         ).scalar() or 6.5
-        print(f"FILMBOX Backend v2.0 | 6D Vector Scoring | Global C: {GLOBAL_C:.4f}")
+        print(f"FILMBOX Backend v4.0 | Context Search Engine | Global C: {GLOBAL_C:.4f}")
+
+        # Build FTS5 index for context search
+        ensure_fts_index(db)
     finally:
         db.close()
 
@@ -123,7 +128,7 @@ def recommend(
 
 
 # -------------------------
-# AI Exploration Endpoint (6D Vector Scoring)
+# AI Exploration Endpoint (Unified NL Query Interpreter — Phase 8)
 # -------------------------
 @app.get("/explore", response_model=RecommendationResponse)
 def explore(
@@ -134,42 +139,88 @@ def explore(
     db: Session = Depends(get_db)
 ):
     """
-    Natural Language -> 6D Emotional Vector -> Cosine Similarity Scoring.
-    
-    Ex: /explore?query=existential psychological thriller
-    Ex: /explore?query=dark but hopeful
-    Ex: /explore?query=light and fun
+    Natural Language → Structured Intent → SQL Filters → Emotional Re-ranking.
+
+    Supports:
+        /explore?query=dark korean revenge movie
+        /explore?query=Tom Cruise action films
+        /explore?query=funny hindi movie
+        /explore?query=best rated R horror
+        /explore?query=hidden gems
+        /explore?query=mind-bending thriller
     """
-    # 1. Convert query to 6D emotional vector via LLM
-    query_vector = classify_emotional_vector(query)
+    # 1. Parse query into emotional vector + structured filters
+    query_vector, intent = classify_emotional_vector(query)
+    print(f"[Explore] query='{query}' → emotion={query_vector}, intent={intent}")
 
-    # 2. Check if we got a valid vector (not all zeros)
-    has_signal = any(v > 0 for v in query_vector.values())
+    # 2. Get user personalization vector if session exists
+    has_emotion = any(v > 0 for v in query_vector.values())
+    has_filters = bool({k: v for k, v in intent.items() if k != "context_query"})
+    has_context = bool(intent.get("context_query"))
 
-    if has_signal:
-        # 3a. Personalization: compute user vector if session exists
+    if has_emotion or has_filters or has_context:
+        # Personalization
         user_vector, interaction_count = compute_user_vector(db, x_session_id) if x_session_id else (None, 0)
 
-        # 3b. Score using cosine similarity
-        results, final_vector = get_vector_recommendations(db, query_vector, GLOBAL_C, user_vector, interaction_count)
+        # 3. Context search (Layer 3)
+        context_scores = None
+        context_query = intent.pop("context_query", None)  # Remove from intent so it doesn't affect SQL filters
+        if context_query:
+            # FTS5 overview search
+            context_scores = search_by_context(db, context_query)
+            print(f"[Context Search] query='{context_query}' → {len(context_scores)} matches")
 
-        # Find dominant archetype for display
-        dominant = max(final_vector, key=final_vector.get)
-        explanation = (
-            f"Emotional vector analysis: "
-            f"Dominant vibe is '{dominant}'. "
-            f"Scoring {len(results)} films by emotional alignment."
+            # Also try multi-keyword matching for richer results
+            keywords_list = [w.strip() for w in context_query.split() if len(w.strip()) > 2]
+            if keywords_list:
+                keyword_scores = search_by_keywords_multi(db, keywords_list)
+                # Merge keyword scores into context scores (union, take max)
+                for mid, score in keyword_scores.items():
+                    if mid in context_scores:
+                        context_scores[mid] = max(context_scores[mid], score * 0.7)  # Keywords weighted slightly less
+                    else:
+                        context_scores[mid] = score * 0.7
+
+        # 4. Execute unified discovery pipeline
+        results, final_vector, explanation = execute_discovery(
+            db=db,
+            intent=intent,
+            global_c=GLOBAL_C,
+            query_vector=query_vector if has_emotion else None,
+            user_vector=user_vector,
+            interaction_count=interaction_count,
+            context_scores=context_scores,
         )
+
+        if final_vector:
+            dominant = max(final_vector, key=final_vector.get)
+        elif intent.get("person_name"):
+            dominant = f"Films with {intent['person_name']}"
+        elif intent.get("sort_by"):
+            sort_labels = {
+                "best": "Top Rated",
+                "worst": "Lowest Rated",
+                "trending": "Trending",
+                "random": "Random Selection",
+                "hidden_gems": "Hidden Gems",
+            }
+            dominant = sort_labels.get(intent["sort_by"], "Discovery")
+        elif has_context:
+            dominant = "Story Search"
+        else:
+            dominant = "Discovery"
+
+        # Add context info to explanation
+        if context_query and context_scores:
+            context_matches = sum(1 for r in results if r.get("context_match"))
+            explanation = f"{explanation} 📖 Context search for '{context_query}' matched {context_matches} movies."
+
     else:
-        # 3c. Fallback to global quality ranking
-        # Using 'Blockbuster' as a proxy for high-quality global leaders if no signal
-        results = get_recommendations(db, "Blockbuster", GLOBAL_C)
+        # Fallback: no emotional signal, no filters, no context
+        results = get_recommendations(db, "light", GLOBAL_C)
         dominant = "Global Best"
         final_vector = query_vector
-        explanation = (
-            "Could not detect a specific emotional vibe. "
-            "Showing global quality leaders."
-        )
+        explanation = "Could not detect a specific vibe. Showing global quality leaders."
 
     paginated = results[offset: offset + limit]
 
@@ -180,6 +231,55 @@ def explore(
         "emotional_vector": final_vector,
         "explanation": explanation
     }
+
+
+# -------------------------
+# Discovery Endpoints (Phase 7)
+# -------------------------
+
+@app.get("/discover/best")
+def discover_best(limit: int = 20, offset: int = 0, db: Session = Depends(get_db)):
+    """Top rated movies — ORDER BY vote_average DESC."""
+    results, _, explanation = execute_discovery(
+        db, {"sort_by": "best"}, GLOBAL_C
+    )
+    return {"category": "best", "count": len(results[offset:offset+limit]), "results": results[offset:offset+limit], "explanation": explanation}
+
+
+@app.get("/discover/worst")
+def discover_worst(limit: int = 20, offset: int = 0, db: Session = Depends(get_db)):
+    """Lowest rated movies — ORDER BY vote_average ASC."""
+    results, _, explanation = execute_discovery(
+        db, {"sort_by": "worst"}, GLOBAL_C
+    )
+    return {"category": "worst", "count": len(results[offset:offset+limit]), "results": results[offset:offset+limit], "explanation": explanation}
+
+
+@app.get("/discover/trending")
+def discover_trending(limit: int = 20, offset: int = 0, db: Session = Depends(get_db)):
+    """Most popular movies right now — ORDER BY popularity DESC."""
+    results, _, explanation = execute_discovery(
+        db, {"sort_by": "trending"}, GLOBAL_C
+    )
+    return {"category": "trending", "count": len(results[offset:offset+limit]), "results": results[offset:offset+limit], "explanation": explanation}
+
+
+@app.get("/discover/random")
+def discover_random(limit: int = 20, db: Session = Depends(get_db)):
+    """Random selection of movies — ORDER BY RANDOM()."""
+    results, _, explanation = execute_discovery(
+        db, {"sort_by": "random"}, GLOBAL_C
+    )
+    return {"category": "random", "count": len(results[:limit]), "results": results[:limit], "explanation": explanation}
+
+
+@app.get("/discover/hidden-gems")
+def discover_hidden_gems(limit: int = 20, offset: int = 0, db: Session = Depends(get_db)):
+    """Hidden gems — high rating (>7), low vote count (<200)."""
+    results, _, explanation = execute_discovery(
+        db, {"sort_by": "hidden_gems"}, GLOBAL_C
+    )
+    return {"category": "hidden_gems", "count": len(results[offset:offset+limit]), "results": results[offset:offset+limit], "explanation": explanation}
 
 
 # -------------------------
