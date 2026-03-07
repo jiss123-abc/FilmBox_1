@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Depends, HTTPException, Request, Header, Query
+from fastapi import FastAPI, Depends, HTTPException, Request, Header, Query, BackgroundTasks
+import subprocess
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from sqlalchemy import text
@@ -347,6 +348,33 @@ def get_profile(
 
 # -------------------------
 # TMDb Live Search Endpoint
+# -------------------------
+# Admin: Remote Ingestion Trigger
+# -------------------------
+def run_ingestion_scripts():
+    print("[Ingestion] Starting 100k Remote Ingestion Pipeline...")
+    try:
+        # Step 1: Download the IDs
+        print("[Ingestion] Step 1: Downloading 100k targets...")
+        subprocess.run(["python", "backend/scripts/download_100k_ids.py"], check=True)
+        
+        # Step 2: Run the fast threaded ingestor
+        print("[Ingestion] Step 2: Running fast threaded ingestion...")
+        subprocess.run(["python", "backend/scripts/ingest_fast_threaded.py"], check=True)
+        
+        print("[Ingestion] Pipeline completed successfully!")
+    except Exception as e:
+        print(f"[Ingestion] Error during pipeline: {e}")
+
+@app.post("/admin/ingest-100k")
+def trigger_100k_ingestion(background_tasks: BackgroundTasks):
+    """
+    Triggers the download and ingestion of the top 100k movies as a background task.
+    This bypasses the need for Render Shell access.
+    """
+    background_tasks.add_task(run_ingestion_scripts)
+    return {"status": "success", "message": "100k ingestion pipeline started in the background. Check Render server logs for progress."}
+
 # -------------------------
 @app.get("/search")
 def search_tmdb(

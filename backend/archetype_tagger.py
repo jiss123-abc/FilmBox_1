@@ -183,7 +183,8 @@ def tag_movie(
     genres: List[str] = None,
     keywords: List[str] = None,
     popularity: float = 0,
-    runtime: int = 0
+    runtime: int = 0,
+    use_llm_fallback: bool = True
 ) -> Dict[str, float]:
     """
     Hybrid tagger: tries rule-based first, falls back to LLM if confidence is low.
@@ -198,7 +199,7 @@ def tag_movie(
     # Step 2: Check confidence
     max_dim = max(vector.values()) if vector else 0
 
-    if max_dim < CONFIDENCE_THRESHOLD and overview:
+    if use_llm_fallback and max_dim < CONFIDENCE_THRESHOLD and overview:
         # Low confidence — use LLM fallback
         llm_vector = tag_by_llm(title, overview, genres)
         if llm_vector:

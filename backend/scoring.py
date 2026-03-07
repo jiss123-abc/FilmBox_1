@@ -389,3 +389,83 @@ def get_vector_recommendations(db, query_vector: dict, global_c: float, user_vec
     final_results = diverse_results + results[30:]
 
     return final_results, final_vector
+
+
+# --- Person-based search (Phase 3: Cast & Crew) ---
+
+def search_by_person(db, person_name: str, global_c: float) -> list:
+    """
+    Find movies by actor or director name.
+    Queries movie_credits + people tables using case-insensitive LIKE match.
+    Returns quality-scored results compatible with the recommendation response format.
+    """
+
+    query = text("""
+        SELECT DISTINCT
+            m.id,
+            m.title,
+            m.vote_average,
+            m.vote_count,
+            m.popularity,
+            m.poster_path,
+            p.name as person_name,
+            mc.role,
+            mc.character_name
+        FROM movies m
+        JOIN movie_credits mc ON mc.movie_id = m.id
+        JOIN people p ON p.id = mc.person_id
+        WHERE LOWER(p.name) LIKE :name_pattern
+        ORDER BY m.popularity DESC
+    """)
+
+    rows = db.execute(query, {"name_pattern": f"%{person_name.lower()}%"}).fetchall()
+
+    if not rows:
+        return []
+
+    results = []
+    seen_ids = set()
+
+    for row in rows:
+        if row.id in seen_ids:
+            continue
+        seen_ids.add(row.id)
+
+        R = row.vote_average or 0
+        v = row.vote_count or 0
+
+        weighted_rating = (
+            (v / (v + M)) * R +
+            (M / (v + M)) * global_c
+        ) if v > 0 else global_c
+
+        pop_score = min((row.popularity or 0) / 100, 10)
+        base_score = (0.7 * weighted_rating) + (0.3 * pop_score)
+        normalized_base = base_score / 10
+
+        # Quality-only scoring (no emotional vector needed for person search)
+        final_score = normalized_base
+
+        # Rating soft boost
+        normalized_rating = min(R / 10, 1.0)
+        final_score *= (1 + 0.05 * normalized_rating)
+
+        # Build role-based explanation
+        role_text = f"as {row.character_name}" if row.character_name else f"({row.role})"
+        explanation = [f"{row.person_name} {role_text}"]
+
+        results.append({
+            "id": row.id,
+            "title": row.title,
+            "final_score": round(final_score, 4),
+            "base_score": round(normalized_base, 4),
+            "emotional_weight": 0.0,
+            "poster_path": row.poster_path,
+            "similarity_score": 0.0,
+            "dominant_archetype": None,
+            "explanation": explanation,
+        })
+
+    results.sort(key=lambda x: x["final_score"], reverse=True)
+    return results
+
