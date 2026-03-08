@@ -9,6 +9,7 @@ Then applies emotional vector scoring on the filtered candidates.
 """
 
 from sqlalchemy import text
+from sqlalchemy.orm import Session
 import math
 
 from .scoring import (
@@ -124,7 +125,7 @@ CONTEXT_BOOST = 0.4  # Context match provides up to 40% score boost
 
 def execute_discovery(db, intent: dict, global_c: float, query_vector: dict = None,
                       user_vector: dict = None, interaction_count: int = 0,
-                      context_scores: dict = None) -> tuple:
+                      context_scores: dict = None, title_scores: dict = None) -> tuple:
     """
     Full discovery pipeline:
         1. Build SQL from structured filters
@@ -132,7 +133,8 @@ def execute_discovery(db, intent: dict, global_c: float, query_vector: dict = No
         3. Load archetype tags for candidates
         4. Apply emotional re-ranking (if vector present)
         5. Apply context boost (if context_scores present)
-        6. Return scored results + metadata
+        6. Apply title boost (if title_scores present)
+        7. Return scored results + metadata
 
     Returns: (results_list, final_vector_or_None, explanation_str)
     """
@@ -160,6 +162,23 @@ def execute_discovery(db, intent: dict, global_c: float, query_vector: dict = No
             ctx_params = {f"ctx_{i}": cid for i, cid in enumerate(top_context_ids)}
             ctx_rows = db.execute(text(ctx_sql), ctx_params).fetchall()
             rows = list(rows) + list(ctx_rows)
+
+    # ── Merge title-matched candidates into the pool ──
+    if title_scores:
+        existing_ids = {row.id for row in rows}
+        title_only_ids = [mid for mid in title_scores if mid not in existing_ids]
+
+        if title_only_ids:
+            placeholders = ",".join([f":t_id_{i}" for i in range(len(title_only_ids))])
+            t_sql = f"""
+                SELECT id, title, overview, vote_average, vote_count,
+                       popularity, poster_path, release_year, runtime
+                FROM movies
+                WHERE id IN ({placeholders})
+            """
+            t_params = {f"t_id_{i}": cid for i, cid in enumerate(title_only_ids)}
+            t_rows = db.execute(text(t_sql), t_params).fetchall()
+            rows = list(rows) + list(t_rows)
 
     if not rows:
         return [], None, "No movies found matching your criteria."
@@ -244,6 +263,12 @@ def execute_discovery(db, intent: dict, global_c: float, query_vector: dict = No
             has_context_match = True
             final_score *= (1 + CONTEXT_BOOST * context_score)
 
+        # Title boost (Direct Priority Match)
+        if title_scores and row.id in title_scores:
+            title_score = title_scores[row.id]
+            # Massive boost (5x) to guarantee exact movie titles stay at the top
+            final_score *= (1 + 5.0 * title_score)
+
         # Dominant archetype
         dominant_archetype = None
         if movie_archetypes:
@@ -307,3 +332,456 @@ def execute_discovery(db, intent: dict, global_c: float, query_vector: dict = No
     explanation_text = f"Showing {len(results)} movies " + ", ".join(filter_parts) + "." if filter_parts else f"Showing {len(results)} movies."
 
     return results, final_vector, explanation_text
+
+
+# -------------------------
+# Similar Movies (2-hop Graph Walk)
+# -------------------------
+
+# Weights for similarity scoring
+SIMILAR_WEIGHTS = {
+    "director": 5,
+    "actor": 2,
+    "genre": 2,
+    "keyword": 1,
+}
+
+# Cap on seed cast to prevent popular-actor explosion (e.g. Samuel L. Jackson)
+SEED_CAST_LIMIT = 10
+
+
+def get_similar_movies(db, seed_id: int, limit: int = 10, min_votes: int = 100, include_explanations: bool = True) -> dict:
+    """
+    Finds movies sharing director, cast, genres, and keywords with a seed movie.
+    Uses a 2-hop CTE-based graph walk for performance.
+    """
+    # 1. Fetch seed movie details and vote count for dynamic sensitivity
+    seed = db.execute(
+        text("SELECT id, title, vote_count FROM movies WHERE id = :id"),
+        {"id": seed_id}
+    ).fetchone()
+
+    if not seed:
+        return {"seed_id": seed_id, "seed_title": "Unknown", "count": 0, "results": []}
+
+    # Dynamic Sensitivity: If seed has few votes (regional/indie), lower the threshold.
+    # Prevents empty results for films like Bramayugam.
+    if seed.vote_count < min_votes:
+        min_votes = max(10, int(seed.vote_count * 0.5))
+        print(f"[Similarity] Lowered min_votes to {min_votes} for seed movie '{seed.title}' (votes: {seed.vote_count})")
+
+    # 2. Main Similarity Query
+    # Weights: Director=5, Actor=2, Genre=2, Keyword=1
+    # Note: If seed has NO attributes, the query will correctly return 0 results due to the WHERE clause.
+    sql = text("""
+        WITH seed_cast AS (
+            SELECT person_id FROM movie_credits
+            WHERE movie_id = :seed_id AND role = 'actor'
+            LIMIT 10
+        ),
+        seed_directors AS (
+            SELECT person_id FROM movie_credits
+            WHERE movie_id = :seed_id AND role = 'director'
+        ),
+        seed_genres AS (
+            SELECT genre_id FROM movie_genres WHERE movie_id = :seed_id
+        ),
+        seed_keywords AS (
+            SELECT keyword_id FROM movie_keywords WHERE movie_id = :seed_id
+        )
+        SELECT 
+            m.id, m.title, m.poster_path, m.vote_average, m.popularity,
+            CAST((
+                COALESCE(dir_match.score, 0) + 
+                COALESCE(cast_match.score, 0) + 
+                COALESCE(genre_match.score, 0) + 
+                COALESCE(kw_match.score, 0)
+            ) AS FLOAT) AS similarity_score
+        FROM movies m
+        LEFT JOIN (
+            SELECT mc.movie_id, COUNT(DISTINCT mc.person_id) * 5 as score
+            FROM movie_credits mc
+            WHERE mc.role = 'director' AND mc.person_id IN (SELECT person_id FROM seed_directors)
+            GROUP BY mc.movie_id
+        ) dir_match ON dir_match.movie_id = m.id
+        LEFT JOIN (
+            SELECT mc.movie_id, COUNT(DISTINCT mc.person_id) * 2 as score
+            FROM movie_credits mc
+            WHERE mc.role = 'actor' AND mc.person_id IN (SELECT person_id FROM seed_cast)
+            GROUP BY mc.movie_id
+        ) cast_match ON cast_match.movie_id = m.id
+        LEFT JOIN (
+            SELECT mg.movie_id, COUNT(DISTINCT mg.genre_id) * 2 as score
+            FROM movie_genres mg
+            WHERE mg.genre_id IN (SELECT genre_id FROM seed_genres)
+            GROUP BY mg.movie_id
+        ) genre_match ON genre_match.movie_id = m.id
+        LEFT JOIN (
+            SELECT mk.movie_id, COUNT(DISTINCT mk.keyword_id) * 1 as score
+            FROM movie_keywords mk
+            WHERE mk.keyword_id IN (SELECT keyword_id FROM seed_keywords)
+            GROUP BY mk.movie_id
+        ) kw_match ON kw_match.movie_id = m.id
+        WHERE m.id != :seed_id
+          AND m.vote_count >= :min_votes
+          AND (COALESCE(dir_match.score, 0) > 0 OR COALESCE(cast_match.score, 0) > 0 OR COALESCE(genre_match.score, 0) > 0 OR COALESCE(kw_match.score, 0) > 0)
+        ORDER BY similarity_score DESC, m.vote_average DESC, m.popularity DESC
+        LIMIT :limit
+    """)
+
+    results = db.execute(sql, {"seed_id": seed_id, "min_votes": min_votes, "limit": limit}).fetchall()
+
+    if not results:
+        return {
+            "seed_movie_id": seed.id,
+            "seed_movie_title": seed.title,
+            "count": 0,
+            "results": [],
+        }
+
+    # 3. Batch explanation builder
+    explanations = {}
+    if include_explanations and results:
+        candidate_ids = [r.id for r in results]
+        explanations = _build_explanations_batch(db, seed_id, candidate_ids)
+
+    # 4. Assemble response
+    formatted_results = []
+    for row in results:
+        formatted_results.append({
+            "id": row.id,
+            "title": row.title,
+            "poster_path": row.poster_path,
+            "vote_average": row.vote_average,
+            "popularity": row.popularity,
+            "similarity_score": float(row.similarity_score),
+            "explanation": explanations.get(row.id, []),
+        })
+
+    return {
+        "seed_movie_id": seed.id,
+        "seed_movie_title": seed.title,
+        "count": len(formatted_results),
+        "results": formatted_results,
+    }
+
+
+
+
+def _build_explanations_batch(db, seed_id: int, candidate_ids: list[int]) -> dict:
+    """
+    Batch-fetch human-readable explanation strings for all candidates at once.
+
+    Returns: {movie_id: ["same director: X", "shared genre: Sci-Fi", ...]}
+    """
+    explanations = {cid: [] for cid in candidate_ids}
+
+    # Build parameterized placeholders
+    ph = ",".join([f":c_{i}" for i in range(len(candidate_ids))])
+    id_params = {f"c_{i}": cid for i, cid in enumerate(candidate_ids)}
+    base_params = {"seed_id": seed_id, **id_params}
+
+    # -- Shared directors --
+    dir_sql = text(f"""
+        SELECT mc.movie_id, p.name
+        FROM movie_credits mc
+        JOIN people p ON p.id = mc.person_id
+        WHERE mc.role = 'director'
+          AND mc.movie_id IN ({ph})
+          AND mc.person_id IN (
+              SELECT person_id FROM movie_credits
+              WHERE movie_id = :seed_id AND role = 'director'
+          )
+    """)
+    for row in db.execute(dir_sql, base_params).fetchall():
+        explanations[row.movie_id].append(f"same director: {row.name}")
+
+    # -- Shared actors --
+    act_sql = text(f"""
+        SELECT mc.movie_id, p.name
+        FROM movie_credits mc
+        JOIN people p ON p.id = mc.person_id
+        WHERE mc.role = 'actor'
+          AND mc.movie_id IN ({ph})
+          AND mc.person_id IN (
+              SELECT person_id FROM movie_credits
+              WHERE movie_id = :seed_id AND role = 'actor'
+              ORDER BY cast_order ASC LIMIT {SEED_CAST_LIMIT}
+          )
+    """)
+    actor_counts = {}
+    for row in db.execute(act_sql, base_params).fetchall():
+        actor_counts.setdefault(row.movie_id, []).append(row.name)
+
+    for mid, names in actor_counts.items():
+        if len(names) == 1:
+            explanations[mid].append(f"shared actor: {names[0]}")
+        else:
+            explanations[mid].append(f"{len(names)} shared actors: {', '.join(names[:3])}")
+
+    # -- Shared genres --
+    gen_sql = text(f"""
+        SELECT mg.movie_id, g.name
+        FROM movie_genres mg
+        JOIN genres g ON g.id = mg.genre_id
+        WHERE mg.movie_id IN ({ph})
+          AND mg.genre_id IN (
+              SELECT genre_id FROM movie_genres WHERE movie_id = :seed_id
+          )
+    """)
+    for row in db.execute(gen_sql, base_params).fetchall():
+        explanations[row.movie_id].append(f"shared genre: {row.name}")
+
+    # -- Shared keywords (cap at 3 per movie for readability) --
+    kw_sql = text(f"""
+        SELECT mk.movie_id, k.name
+        FROM movie_keywords mk
+        JOIN keywords k ON k.id = mk.keyword_id
+        WHERE mk.movie_id IN ({ph})
+          AND mk.keyword_id IN (
+              SELECT keyword_id FROM movie_keywords WHERE movie_id = :seed_id
+          )
+    """)
+    kw_map = {}
+    for row in db.execute(kw_sql, base_params).fetchall():
+        kw_map.setdefault(row.movie_id, []).append(row.name)
+
+    for mid, kw_names in kw_map.items():
+        if len(kw_names) <= 3:
+            for kw in kw_names:
+                explanations[mid].append(f"shared keyword: {kw}")
+        else:
+            explanations[mid].append(
+                f"{len(kw_names)} shared keywords: {', '.join(kw_names[:3])}…"
+            )
+    return explanations
+def _enrich_from_tmdb(db: Session, movie_id: int):
+    """
+    On-demand enrichment: Fetches credits, genres, keywords, and countries 
+    from TMDb and persists them to the database. Uses a short timeout
+    to avoid blocking the page load if TMDb is unreachable.
+    """
+    import os
+    import threading
+    import requests as req
+    from dotenv import load_dotenv
+    load_dotenv()
+
+    tmdb_key = os.getenv("TMDB_API_KEY", "")
+    if not tmdb_key:
+        return
+
+    row = db.execute(text("SELECT tmdb_id FROM movies WHERE id = :id"), {"id": movie_id}).first()
+    if not row or not row.tmdb_id:
+        return
+
+    tmdb_id = row.tmdb_id
+    print(f"[Enrich] Attempting fast TMDb fetch for movie {movie_id} (tmdb_id={tmdb_id})")
+
+    # Use a direct HTTP call with 3-second timeout instead of the retry-heavy _tmdb_get
+    try:
+        url = f"https://api.themoviedb.org/3/movie/{tmdb_id}"
+        resp = req.get(url, params={
+            "api_key": tmdb_key,
+            "language": "en-US",
+            "append_to_response": "credits,keywords,release_dates"
+        }, timeout=3)
+
+        if resp.status_code != 200:
+            print(f"[Enrich] TMDb returned {resp.status_code}, skipping")
+            return
+
+        data = resp.json()
+    except Exception as e:
+        print(f"[Enrich] TMDb unreachable ({type(e).__name__}), skipping enrichment")
+        return
+
+    try:
+        # Parse raw TMDb API response directly (not the normalized fetch_movie_everything format)
+        genres = [g["name"].lower() for g in data.get("genres", [])]
+        credits_data = data.get("credits", {})
+        keywords_data = data.get("keywords", {})
+        keywords_list = [kw["name"].lower() for kw in keywords_data.get("keywords", [])]
+        prod_countries = data.get("production_countries", [])
+
+        # Helper: get or create a record and return its id
+        def get_or_create(table, name_col, name_val, extra_cols=None):
+            r = db.execute(text(f"SELECT id FROM {table} WHERE {name_col} = :name"), {"name": name_val}).first()
+            if r:
+                return r.id
+            if extra_cols:
+                cols = f"{name_col}, " + ", ".join(extra_cols.keys())
+                placeholders = ":name, " + ", ".join(f":{k}" for k in extra_cols.keys())
+                params = {"name": name_val, **extra_cols}
+            else:
+                cols = name_col
+                placeholders = ":name"
+                params = {"name": name_val}
+            db.execute(text(f"INSERT OR IGNORE INTO {table} ({cols}) VALUES ({placeholders})"), params)
+            r = db.execute(text(f"SELECT id FROM {table} WHERE {name_col} = :name"), {"name": name_val}).first()
+            return r.id if r else None
+
+        # Insert genres
+        for genre_name in genres:
+            genre_id = get_or_create("genres", "name", genre_name)
+            if genre_id:
+                db.execute(text("INSERT OR IGNORE INTO movie_genres (movie_id, genre_id) VALUES (:mid, :gid)"),
+                           {"mid": movie_id, "gid": genre_id})
+
+        # Insert keywords
+        for kw_name in keywords_list:
+            kw_id = get_or_create("keywords", "name", kw_name)
+            if kw_id:
+                db.execute(text("INSERT OR IGNORE INTO movie_keywords (movie_id, keyword_id) VALUES (:mid, :kid)"),
+                           {"mid": movie_id, "kid": kw_id})
+
+        # Insert cast (top 10)
+        for actor in credits_data.get("cast", [])[:10]:
+            person_id = get_or_create("people", "name", actor["name"], 
+                                       {"tmdb_id": actor.get("id")})
+            if person_id:
+                db.execute(text("""
+                    INSERT OR IGNORE INTO movie_credits (movie_id, person_id, role, character_name, cast_order)
+                    VALUES (:mid, :pid, 'actor', :char, :ord)
+                """), {"mid": movie_id, "pid": person_id, 
+                       "char": actor.get("character", ""), "ord": actor.get("order", 99)})
+
+        # Insert directors
+        for crew in credits_data.get("crew", []):
+            if crew.get("job") == "Director":
+                person_id = get_or_create("people", "name", crew["name"],
+                                           {"tmdb_id": crew.get("id")})
+                if person_id:
+                    db.execute(text("""
+                        INSERT OR IGNORE INTO movie_credits (movie_id, person_id, role)
+                        VALUES (:mid, :pid, 'director')
+                    """), {"mid": movie_id, "pid": person_id})
+
+        # Insert production countries
+        for country in prod_countries:
+            iso = country.get("iso_3166_1", "")
+            if iso:
+                country_id = get_or_create("countries", "name", country.get("name", ""),
+                                            {"iso_code": iso})
+                if country_id:
+                    db.execute(text("INSERT OR IGNORE INTO movie_countries (movie_id, country_id) VALUES (:mid, :cid)"),
+                               {"mid": movie_id, "cid": country_id})
+
+        # Update language
+        orig_lang = data.get("original_language")
+        if orig_lang:
+            lang = db.execute(text("SELECT id FROM languages WHERE iso_code = :code"), {"code": orig_lang}).first()
+            if lang:
+                db.execute(text("UPDATE movies SET language_id = :lid WHERE id = :mid"),
+                           {"lid": lang.id, "mid": movie_id})
+
+        db.commit()
+        print(f"[Enrich] Successfully enriched movie {movie_id} with {len(genres)} genres, {len(keywords_list)} keywords")
+
+    except Exception as e:
+        print(f"[Enrich] Error enriching movie {movie_id}: {e}")
+        db.rollback()
+
+
+def get_movie_details(db: Session, movie_id: int) -> dict | None:
+    """
+    Retrieves full movie metadata by aggregating data from multiple tables.
+    Auto-enriches from TMDb if credits are missing.
+    """
+    # 1. Fetch Core Metadata (Note: release_year mapped to release_date as TEXT)
+    movie = db.execute(
+        text("""
+            SELECT id, title, overview, CAST(release_year AS TEXT) as release_date, 
+                   runtime, poster_path, vote_average, vote_count, popularity
+            FROM movies WHERE id = :id
+        """),
+        {"id": movie_id}
+    ).mappings().first()
+
+    if not movie:
+        return None
+
+    movie_dict = dict(movie)
+
+    # 2. Check if credits exist — if not, auto-enrich from TMDb
+    # NOTE: Commented out for local dev (TMDb unreachable). 
+    # Uncomment when deployed to Render or when TMDb API is accessible.
+    # credit_count = db.execute(
+    #     text("SELECT COUNT(*) as cnt FROM movie_credits WHERE movie_id = :id"),
+    #     {"id": movie_id}
+    # ).first()
+    # if credit_count and credit_count.cnt == 0:
+    #     _enrich_from_tmdb(db, movie_id)
+
+    # 3. Fetch Genres
+    genres_sql = text("""
+        SELECT g.id, g.name
+        FROM movie_genres mg
+        JOIN genres g ON g.id = mg.genre_id
+        WHERE mg.movie_id = :id
+        ORDER BY g.name
+    """)
+    genres = db.execute(genres_sql, {"id": movie_id}).mappings().all()
+
+    # 4. Fetch Top 10 Cast (Aliasing character_name to character)
+    cast_sql = text("""
+        SELECT p.id, p.name, mc.character_name as character
+        FROM movie_credits mc
+        JOIN people p ON p.id = mc.person_id
+        WHERE mc.movie_id = :id AND mc.role = 'actor'
+        LIMIT 10
+    """)
+    cast = db.execute(cast_sql, {"id": movie_id}).mappings().all()
+
+    # 5. Fetch Director
+    director_sql = text("""
+        SELECT p.id, p.name
+        FROM movie_credits mc
+        JOIN people p ON p.id = mc.person_id
+        WHERE mc.movie_id = :id AND mc.role = 'director'
+    """)
+    director = db.execute(director_sql, {"id": movie_id}).mappings().first()
+
+    # 6. Fetch Keywords
+    keywords_sql = text("""
+        SELECT k.id, k.name
+        FROM movie_keywords mk
+        JOIN keywords k ON k.id = mk.keyword_id
+        WHERE mk.movie_id = :id
+        ORDER BY k.name
+    """)
+    keywords = db.execute(keywords_sql, {"id": movie_id}).mappings().all()
+
+    # 7. Fetch Production Countries
+    countries_sql = text("""
+        SELECT c.id, c.name
+        FROM movie_countries mc
+        JOIN countries c ON c.id = mc.country_id
+        WHERE mc.movie_id = :id
+        ORDER BY c.name
+    """)
+    countries = db.execute(countries_sql, {"id": movie_id}).mappings().all()
+
+    # 8. Resolve Language Name and ISO Code
+    lang_sql = text("""
+        SELECT l.name, l.iso_code 
+        FROM languages l
+        JOIN movies m ON m.language_id = l.id
+        WHERE m.id = :id
+    """)
+    lang_info = db.execute(lang_sql, {"id": movie_id}).mappings().first()
+    
+    language_name = lang_info['name'] if lang_info else None
+    language_code = lang_info['iso_code'] if lang_info else None
+
+    # Assemble final dict
+    return {
+        **movie_dict,
+        "genres": [dict(r) for r in genres],
+        "cast": [dict(r) for r in cast],
+        "director": dict(director) if director else None,
+        "keywords": [dict(r) for r in keywords],
+        "countries": [dict(r) for r in countries],
+        "language": language_name,
+        "original_language": language_code
+    }

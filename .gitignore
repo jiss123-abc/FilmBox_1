@@ -13,3 +13,12 @@ dist/
 build/
 .vscode/
 .idea/
+
+NUL
+*.json
+!package.json
+!tsconfig.json
+!filmbox-frontend/package.json
+!filmbox-frontend/tsconfig.json
+generate_*.py
+cloud_movies.json

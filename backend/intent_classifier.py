@@ -61,6 +61,7 @@ STRUCTURED FILTERS (set to null if not detected):
 - keyword: string|null — Theme or keyword (e.g. "revenge", "time travel", "space")
 - certification: string|null — Rating (e.g. "R", "PG-13", "PG")
 - sort_by: string|null — One of: "best", "worst", "trending", "random", "hidden_gems" or null
+- similar_to_title: string|null — The title of a movie to find recommendations similar to (e.g. for "movies like Inception", extracted value is "Inception")
 
 CONTEXT SEARCH (set to null if not detected):
 - context_query: string|null — Search terms to find matching movie plot descriptions. CRITICAL: Do NOT just echo the user's words. Instead, think about what words would ACTUALLY APPEAR in a movie's plot overview/synopsis for this concept. Movie overviews describe what happens in the story — generate 4-8 words that a movie database synopsis would use. Examples: user says "hero loses" → use "defeat tragic death sacrifice failure falls"; user says "villain wins" → use "evil triumphs defeat darkness prevails"; user says "trapped in one room" → use "confined trapped room escape locked"; user says "time loops" → use "loop repeating relive same day over". Set to null for pure mood/filter queries.
@@ -78,16 +79,22 @@ RULES:
 10. NEVER extract the archetype core words ("dark", "mind-bending", "inspirational", "emotional", "light", "adrenaline") as the `keyword` string. The `keyword` should only be concrete plot elements like "revenge" or "space".
 11. context_query is for STORY-LEVEL plot concepts that go beyond single keywords. If the user describes a plot pattern (e.g. "movies where the villain wins"), extract the core concept as context_query (e.g. "villain wins defeat"). For simple keyword queries, use keyword instead.
 12. context_query and keyword can BOTH be set simultaneously when appropriate.
+13. MOVIE NAMES: If the user query is clearly a specific movie title (e.g. "Avengers", "The Matrix", "Interstellar"), do NOT abstract it into a vibe. Set emotional values to low/neutral and let the search engine handle the title.
+14. SIMILAR TO: Only extract `similar_to_title` if the user explicitly asks for movies "like", "similar to", or "more of" a specific title (e.g. "movies like Inception"). For pure title entries (e.g. "Inception"), set `similar_to_title` to null.
 
 EXAMPLES:
-- "dark korean revenge movie" → {{"mind_bending": 0.3, "dark": 0.9, "emotional": 0.4, "inspirational": 0.0, "adrenaline": 0.6, "light": 0.0, "person_name": null, "language": "ko", "country": "South Korea", "keyword": "revenge", "certification": null, "sort_by": null, "context_query": null}}
-- "Tom Cruise movies" → {{"mind_bending": 0.0, "dark": 0.0, "emotional": 0.0, "inspirational": 0.0, "adrenaline": 0.0, "light": 0.0, "person_name": "Tom Cruise", "language": null, "country": null, "keyword": null, "certification": null, "sort_by": null, "context_query": null}}
-- "movies where the villain wins" → {{"mind_bending": 0.3, "dark": 0.8, "emotional": 0.2, "inspirational": 0.0, "adrenaline": 0.4, "light": 0.0, "person_name": null, "language": null, "country": null, "keyword": null, "certification": null, "sort_by": null, "context_query": "evil triumphs darkness prevails villain defeats"}}
-- "movies where the hero loses" → {{"mind_bending": 0.2, "dark": 0.8, "emotional": 0.6, "inspirational": 0.0, "adrenaline": 0.3, "light": 0.0, "person_name": null, "language": null, "country": null, "keyword": null, "certification": null, "sort_by": null, "context_query": "defeat tragic death sacrifice failure falls destroyed"}}
-- "movies about time loops" → {{"mind_bending": 0.9, "dark": 0.2, "emotional": 0.1, "inspirational": 0.0, "adrenaline": 0.3, "light": 0.0, "person_name": null, "language": null, "country": null, "keyword": "time travel", "certification": null, "sort_by": null, "context_query": "loop repeating relive same day over again"}}
-- "dark psychological movies about obsession" → {{"mind_bending": 0.7, "dark": 0.9, "emotional": 0.5, "inspirational": 0.0, "adrenaline": 0.3, "light": 0.0, "person_name": null, "language": null, "country": null, "keyword": null, "certification": null, "sort_by": null, "context_query": "obsessed fixated consumed madness spiraling"}}
-- "movies where people are trapped in one location" → {{"mind_bending": 0.3, "dark": 0.5, "emotional": 0.2, "inspirational": 0.0, "adrenaline": 0.6, "light": 0.0, "person_name": null, "language": null, "country": null, "keyword": null, "certification": null, "sort_by": null, "context_query": "trapped confined locked room bunker escape survive"}}
-- "hidden gems" → {{"mind_bending": 0.0, "dark": 0.0, "emotional": 0.0, "inspirational": 0.0, "adrenaline": 0.0, "light": 0.0, "person_name": null, "language": null, "country": null, "keyword": null, "certification": null, "sort_by": "hidden_gems", "context_query": null}}"""
+- "dark korean revenge movie" → {{"mind_bending": 0.3, "dark": 0.9, "emotional": 0.4, "inspirational": 0.0, "adrenaline": 0.6, "light": 0.0, "person_name": null, "language": "ko", "country": "South Korea", "keyword": "revenge", "certification": null, "sort_by": null, "similar_to_title": null, "context_query": null}}
+- "Avengers" → {{"mind_bending": 0.1, "dark": 0.1, "emotional": 0.1, "inspirational": 0.1, "adrenaline": 0.3, "light": 0.1, "person_name": null, "language": null, "country": null, "keyword": null, "certification": null, "sort_by": null, "similar_to_title": null, "context_query": null}}
+- "movies like The Matrix" → {{"mind_bending": 0.0, "dark": 0.0, "emotional": 0.0, "inspirational": 0.0, "adrenaline": 0.0, "light": 0.0, "person_name": null, "language": null, "country": null, "keyword": null, "certification": null, "sort_by": null, "similar_to_title": "The Matrix", "context_query": null}}
+- "Bramayugam" → {{"mind_bending": 0.1, "dark": 0.1, "emotional": 0.1, "inspirational": 0.1, "adrenaline": 0.3, "light": 0.1, "person_name": null, "language": null, "country": null, "keyword": null, "certification": null, "sort_by": null, "similar_to_title": null, "context_query": null}}
+- "more like Bramayugam" → {{"mind_bending": 0.0, "dark": 0.0, "emotional": 0.0, "inspirational": 0.0, "adrenaline": 0.0, "light": 0.0, "person_name": null, "language": null, "country": null, "keyword": null, "certification": null, "sort_by": null, "similar_to_title": "Bramayugam", "context_query": null}}
+- "Tom Cruise movies" → {{"mind_bending": 0.0, "dark": 0.0, "emotional": 0.0, "inspirational": 0.0, "adrenaline": 0.0, "light": 0.0, "person_name": "Tom Cruise", "language": null, "country": null, "keyword": null, "certification": null, "sort_by": null, "similar_to_title": null, "context_query": null}}
+- "movies where the villain wins" → {{"mind_bending": 0.3, "dark": 0.8, "emotional": 0.2, "inspirational": 0.0, "adrenaline": 0.4, "light": 0.0, "person_name": null, "language": null, "country": null, "keyword": null, "certification": null, "sort_by": null, "similar_to_title": null, "context_query": "evil triumphs darkness prevails villain defeats"}}
+- "movies where the hero loses" → {{"mind_bending": 0.2, "dark": 0.8, "emotional": 0.6, "inspirational": 0.0, "adrenaline": 0.3, "light": 0.0, "person_name": null, "language": null, "country": null, "keyword": null, "certification": null, "sort_by": null, "similar_to_title": null, "context_query": "defeat tragic death sacrifice failure falls destroyed"}}
+- "movies about time loops" → {{"mind_bending": 0.9, "dark": 0.2, "emotional": 0.1, "inspirational": 0.0, "adrenaline": 0.3, "light": 0.0, "person_name": null, "language": null, "country": null, "keyword": "time travel", "certification": null, "sort_by": null, "similar_to_title": null, "context_query": "loop repeating relive same day over again"}}
+- "dark psychological movies about obsession" → {{"mind_bending": 0.7, "dark": 0.9, "emotional": 0.5, "inspirational": 0.0, "adrenaline": 0.3, "light": 0.0, "person_name": null, "language": null, "country": null, "keyword": null, "certification": null, "sort_by": null, "similar_to_title": null, "context_query": "obsessed fixated consumed madness spiraling"}}
+- "movies where people are trapped in one location" → {{"mind_bending": 0.3, "dark": 0.5, "emotional": 0.2, "inspirational": 0.0, "adrenaline": 0.6, "light": 0.0, "person_name": null, "language": null, "country": null, "keyword": null, "certification": null, "sort_by": null, "similar_to_title": null, "context_query": "trapped confined locked room bunker escape survive"}}
+- "hidden gems" → {{"mind_bending": 0.0, "dark": 0.0, "emotional": 0.0, "inspirational": 0.0, "adrenaline": 0.0, "light": 0.0, "person_name": null, "language": null, "country": null, "keyword": null, "certification": null, "sort_by": "hidden_gems", "similar_to_title": null, "context_query": null}}"""
 
     try:
         response = client.chat.completions.create(
@@ -117,7 +124,7 @@ EXAMPLES:
 
         # Extract structured filters
         intent = {}
-        for key in ["person_name", "language", "country", "keyword", "certification", "sort_by", "context_query"]:
+        for key in ["person_name", "language", "country", "keyword", "certification", "sort_by", "context_query", "similar_to_title"]:
             val = data.get(key)
             if val and isinstance(val, str) and val.strip():
                 intent[key] = val.strip()

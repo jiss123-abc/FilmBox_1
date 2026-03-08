@@ -1,6 +1,6 @@
-import { ExploreResponse, ProfileResponse } from "@/types/movie"
+import { ExploreResponse, ProfileResponse, MovieDetails, SimilarResponse } from "@/types/movie"
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8012"
 
 export function getSessionId(): string {
     if (typeof window === "undefined") return ""
@@ -29,7 +29,7 @@ export async function explore(query: string): Promise<ExploreResponse> {
     return res.json()
 }
 
-export async function recommend(archetype: string, limit: number = 20): Promise<ExploreResponse> {
+export async function recommend(archetype: string, limit: number = 30): Promise<ExploreResponse> {
     const res = await fetch(
         `${API_URL}/recommend?archetype=${encodeURIComponent(archetype)}&limit=${limit}`
     )
@@ -72,5 +72,21 @@ export async function getProfile(sessionId: string): Promise<ProfileResponse> {
         throw new Error("Failed to load profile")
     }
 
+    return res.json()
+}
+
+export async function getMovieDetails(id: number): Promise<MovieDetails> {
+    const res = await fetch(`${API_URL}/movies/${id}`)
+    if (!res.ok) {
+        throw new Error("Failed to fetch movie details")
+    }
+    return res.json()
+}
+
+export async function getSimilarMovies(id: number, limit: number = 12): Promise<SimilarResponse> {
+    const res = await fetch(`${API_URL}/movies/${id}/similar?limit=${limit}`)
+    if (!res.ok) {
+        throw new Error("Failed to fetch similar movies")
+    }
     return res.json()
 }

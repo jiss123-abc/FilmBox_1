@@ -13,12 +13,12 @@ load_dotenv()
 # Absolute imports for package reliability
 from .database import SessionLocal
 from .scoring import get_recommendations, get_vector_recommendations, compute_user_vector, search_by_person
-from .models import RecommendationResponse, ErrorResponse, InteractionRequest, InteractionResponse, ProfileResponse
+from .models import RecommendationResponse, ErrorResponse, InteractionRequest, InteractionResponse, ProfileResponse, SimilarMoviesResponse, MovieDetailsResponse
 from .intent_classifier import classify_archetype, classify_emotional_vector
-from .query_builder import execute_discovery
+from .query_builder import execute_discovery, get_similar_movies, get_movie_details
 from .tmdb_service import search_movie, fetch_movie_details
 from .archetype_tagger import tag_movie, ARCHETYPES as TAG_ARCHETYPES
-from .context_search import ensure_fts_index, search_by_context, search_by_keywords_multi
+from .context_search import ensure_fts_index, search_by_context, search_by_keywords_multi, get_title_matches
 
 
 app = FastAPI(title="FILMBOX API")
@@ -103,7 +103,7 @@ def health():
 )
 def recommend(
     archetype: str,
-    limit: int = 20,
+    limit: int = 30,
     offset: int = 0,
     db: Session = Depends(get_db)
 ):
@@ -134,13 +134,13 @@ def recommend(
 @app.get("/explore", response_model=RecommendationResponse)
 def explore(
     query: str,
-    limit: int = 20,
+    limit: int = 30,
     offset: int = 0,
     x_session_id: str = Header(None),
     db: Session = Depends(get_db)
 ):
     """
-    Natural Language → Structured Intent → SQL Filters → Emotional Re-ranking.
+    Natural Language -> Structured Intent -> SQL Filters -> Emotional Re-ranking.
 
     Supports:
         /explore?query=dark korean revenge movie
@@ -152,18 +152,73 @@ def explore(
     """
     # 1. Parse query into emotional vector + structured filters
     query_vector, intent = classify_emotional_vector(query)
-    print(f"[Explore] query='{query}' → emotion={query_vector}, intent={intent}")
+    print(f"[Explore] query='{query}' -> emotion={query_vector}, intent={intent}")
 
     # 2. Get user personalization vector if session exists
     has_emotion = any(v > 0 for v in query_vector.values())
     has_filters = bool({k: v for k, v in intent.items() if k != "context_query"})
     has_context = bool(intent.get("context_query"))
 
-    if has_emotion or has_filters or has_context:
+    if has_emotion or has_filters or has_context or intent.get("similar_to_title"):
+        # 1.5 Handle "Similar To" ( movies like X )
+        similar_to_title = intent.pop("similar_to_title", None)
+        lookup_title = similar_to_title if similar_to_title else query
+        
+        if similar_to_title:
+            print(f"[Explore] Detected similarity request for: '{similar_to_title}'")
+            # Find the best title match for the seed ID
+            seed_matches = get_title_matches(db, similar_to_title)
+            if seed_matches:
+                seed_id = max(seed_matches, key=seed_matches.get)
+                # Call similarity engine
+                sim_result = get_similar_movies(db, seed_id, limit=limit)
+                if sim_result and sim_result["count"] > 0:
+                    # ... (rest of similarity result handling) ...
+                    formatted_results = []
+                    for r in sim_result["results"]:
+                        formatted_results.append({
+                            "id": r["id"],
+                            "title": r["title"],
+                            "final_score": r["similarity_score"],
+                            "base_score": r["vote_average"],
+                            "emotional_weight": r["similarity_score"],
+                            "poster_path": r["poster_path"],
+                            "similarity_score": r["similarity_score"],
+                            "dominant_archetype": "Similar Movie",
+                            "explanation": r["explanation"]
+                        })
+                    
+                    # 4. Fetch seed movie's emotional DNA for the explanation
+                    seed_tags = db.execute(
+                        text("SELECT archetype, weight FROM emotional_archetype_tags WHERE movie_id = :sid ORDER BY weight DESC LIMIT 2"),
+                        {"sid": seed_id}
+                    ).fetchall()
+                    
+                    alignment_text = ""
+                    if seed_tags:
+                        alignment_text = f"• Strong match for: {seed_tags[0].archetype.replace('_', ' ').title()}\n"
+                        if len(seed_tags) > 1:
+                            alignment_text += f"• Also aligns with: {seed_tags[1].archetype.replace('_', ' ').title()}\n\n"
+
+                    return {
+                        "archetype": f"More like {sim_result['seed_movie_title']}",
+                        "count": len(formatted_results),
+                        "results": formatted_results,
+                        "emotional_vector": query_vector,
+                        "explanation": f"{alignment_text}Found {len(formatted_results)} movies similar to '{sim_result['seed_movie_title']}' based on shared director, cast, and genres."
+                    }
+            print(f"[Explore] No seed movie or no similar movies found for '{similar_to_title}', falling back to discovery.")
+
         # Personalization
         user_vector, interaction_count = compute_user_vector(db, x_session_id) if x_session_id else (None, 0)
 
-        # 3. Context search (Layer 3)
+        # 3. Handle Title Search Priority (Layer 2.5)
+        title_scores = get_title_matches(db, lookup_title)
+
+        if title_scores:
+            print(f"[Title Search] query='{query}' matched {len(title_scores)} movie titles.")
+
+        # 4. Context search (Layer 3)
         context_scores = None
         context_query = intent.pop("context_query", None)  # Remove from intent so it doesn't affect SQL filters
         if context_query:
@@ -191,9 +246,12 @@ def explore(
             user_vector=user_vector,
             interaction_count=interaction_count,
             context_scores=context_scores,
+            title_scores=title_scores
         )
 
-        if final_vector:
+        if title_scores and any(r.get("id") in title_scores for r in results[:5]):
+            dominant = "Search Results"
+        elif final_vector:
             dominant = max(final_vector, key=final_vector.get)
         elif intent.get("person_name"):
             dominant = f"Films with {intent['person_name']}"
@@ -239,7 +297,7 @@ def explore(
 # -------------------------
 
 @app.get("/discover/best")
-def discover_best(limit: int = 20, offset: int = 0, db: Session = Depends(get_db)):
+def discover_best(limit: int = 30, offset: int = 0, db: Session = Depends(get_db)):
     """Top rated movies — ORDER BY vote_average DESC."""
     results, _, explanation = execute_discovery(
         db, {"sort_by": "best"}, GLOBAL_C
@@ -248,7 +306,7 @@ def discover_best(limit: int = 20, offset: int = 0, db: Session = Depends(get_db
 
 
 @app.get("/discover/worst")
-def discover_worst(limit: int = 20, offset: int = 0, db: Session = Depends(get_db)):
+def discover_worst(limit: int = 30, offset: int = 0, db: Session = Depends(get_db)):
     """Lowest rated movies — ORDER BY vote_average ASC."""
     results, _, explanation = execute_discovery(
         db, {"sort_by": "worst"}, GLOBAL_C
@@ -257,7 +315,7 @@ def discover_worst(limit: int = 20, offset: int = 0, db: Session = Depends(get_d
 
 
 @app.get("/discover/trending")
-def discover_trending(limit: int = 20, offset: int = 0, db: Session = Depends(get_db)):
+def discover_trending(limit: int = 30, offset: int = 0, db: Session = Depends(get_db)):
     """Most popular movies right now — ORDER BY popularity DESC."""
     results, _, explanation = execute_discovery(
         db, {"sort_by": "trending"}, GLOBAL_C
@@ -266,7 +324,7 @@ def discover_trending(limit: int = 20, offset: int = 0, db: Session = Depends(ge
 
 
 @app.get("/discover/random")
-def discover_random(limit: int = 20, db: Session = Depends(get_db)):
+def discover_random(limit: int = 30, db: Session = Depends(get_db)):
     """Random selection of movies — ORDER BY RANDOM()."""
     results, _, explanation = execute_discovery(
         db, {"sort_by": "random"}, GLOBAL_C
@@ -275,7 +333,7 @@ def discover_random(limit: int = 20, db: Session = Depends(get_db)):
 
 
 @app.get("/discover/hidden-gems")
-def discover_hidden_gems(limit: int = 20, offset: int = 0, db: Session = Depends(get_db)):
+def discover_hidden_gems(limit: int = 30, offset: int = 0, db: Session = Depends(get_db)):
     """Hidden gems — high rating (>7), low vote count (<200)."""
     results, _, explanation = execute_discovery(
         db, {"sort_by": "hidden_gems"}, GLOBAL_C
@@ -484,3 +542,48 @@ def search_tmdb(
         "count": len(imported),
         "results": imported
     }
+
+
+# -------------------------
+# Similar Movies Endpoint
+# -------------------------
+@app.get("/movies/{movie_id}/similar", response_model=SimilarMoviesResponse)
+def similar_movies(
+    movie_id: int,
+    limit: int = 10,
+    min_votes: int = 100,
+    include_explanations: bool = True,
+    db: Session = Depends(get_db)
+):
+    """
+    Find movies similar to a given seed movie.
+
+    Uses a 2-hop graph walk over shared directors, cast, genres,
+    and keywords. Returns ranked results with optional explanation
+    metadata showing why each movie was recommended.
+    """
+    result = get_similar_movies(
+        db,
+        seed_id=movie_id,
+        limit=limit,
+        min_votes=min_votes,
+        include_explanations=include_explanations,
+    )
+
+    if result is None:
+        raise HTTPException(status_code=404, detail=f"Movie {movie_id} not found")
+
+    return result
+@app.get("/movies/{movie_id}", response_model=MovieDetailsResponse)
+def movie_details(
+    movie_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Retrieves the full metadata for a single movie.
+    Used for the detail view / movie profile page.
+    """
+    movie = get_movie_details(db, movie_id)
+    if not movie:
+        raise HTTPException(status_code=404, detail=f"Movie {movie_id} not found")
+    return movie

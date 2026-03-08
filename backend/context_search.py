@@ -195,3 +195,53 @@ def search_by_keywords_multi(db, keywords_list: list) -> dict:
 
     total_keywords = len(keywords_list)
     return {row.movie_id: min(row.match_count / total_keywords, 1.0) for row in rows}
+
+
+def get_title_matches(db, query: str) -> dict:
+    """
+    Finds movies where the title matches the query (exact or partial).
+    Useful for overriding general emotional vibes when a specific movie is named.
+    
+    Returns: {movie_id: score} where score is 1.0 for exact, 0.5-0.8 for partial.
+    """
+    if not query or len(query) < 2:
+        return {}
+
+    clean_query = query.strip().lower()
+    
+    # 1. Try exact match
+    exact = db.execute(
+        text("SELECT id FROM movies WHERE LOWER(title) = :q"),
+        {"q": clean_query}
+    ).fetchall()
+    
+    results = {row.id: 1.0 for row in exact}
+    
+    # 2. Try partial match via FTS for speed
+    try:
+        # FTS5 title match (much faster than LIKE)
+        fts_rows = db.execute(
+            text("""
+                SELECT rowid FROM movies_fts 
+                WHERE title MATCH :q 
+                LIMIT 50
+            """),
+            {"q": f'"{clean_query}"*'}
+        ).fetchall()
+        
+        for row in fts_rows:
+            if row.rowid not in results:
+                # If it's a prefix match or contains the words, give it a solid score
+                results[row.rowid] = 0.8
+    except Exception as e:
+        print(f"[Context Search] Title FTS error: {e}")
+        # Fallback to LIKE if FTS fails
+        partial = db.execute(
+            text("SELECT id FROM movies WHERE LOWER(title) LIKE :q LIMIT 50"),
+            {"q": f"%{clean_query}%"}
+        ).fetchall()
+        for row in partial:
+            if row.id not in results:
+                results[row.id] = 0.6
+
+    return results
